@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Cursor } from "@/components/site/cursor";
 import { RevealEngine } from "@/components/site/reveal-engine";
 import { SiteNav } from "@/components/site/site-nav";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -134,6 +135,7 @@ function RootComponent() {
       <RevealEngine />
       <Cursor />
       <SiteNav />
+      <Toaster position="bottom-right" />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>
