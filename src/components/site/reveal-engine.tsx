@@ -36,14 +36,20 @@ export function RevealEngine() {
       });
     };
 
-    // defer the first pass until after hydration settles so no server-rendered
-    // attribute is mutated mid-hydration
-    const first = window.setTimeout(scan, 150);
+    // Defer the first pass until the document is fully loaded: lazily hydrated
+    // route trees settle by then, so nothing is mutated mid-hydration.
+    let first = 0;
+    const start = () => {
+      first = window.setTimeout(scan, 60);
+    };
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
     const mo = new MutationObserver(() => scan());
     mo.observe(document.body, { childList: true, subtree: true });
 
     return () => {
       window.clearTimeout(first);
+      window.removeEventListener("load", start);
       mo.disconnect();
       io.disconnect();
     };
