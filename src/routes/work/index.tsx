@@ -44,9 +44,7 @@ function WorkIndexPage() {
       <section className="shell pb-[14vh]">
         <ul>
           {projects.map((p, i) => (
-            <li key={p.slug} className="contents">
-              <ProjectRow project={p} i={i} />
-            </li>
+            <ProjectRow key={p.slug} project={p} i={i} />
           ))}
         </ul>
         <div className="hairline-t" />
