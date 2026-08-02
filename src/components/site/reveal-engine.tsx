@@ -3,7 +3,7 @@ import { useEffect } from "react";
 /**
  * Global choreographed reveal engine.
  * Observes every [data-reveal] node (including nodes added by navigation) and
- * flips `.is-in` once. CSS in styles.css owns the actual motion.
+ * sets `data-in` once (an attribute React never rendered, so hydration stays clean). CSS in styles.css owns the actual motion.
  */
 export function RevealEngine() {
   useEffect(() => {
@@ -15,7 +15,7 @@ export function RevealEngine() {
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            entry.target.classList.add("is-in");
+            entry.target.setAttribute("data-in", "");
             io.unobserve(entry.target);
           }
         }
@@ -29,7 +29,7 @@ export function RevealEngine() {
         observed.add(el);
         const rect = el.getBoundingClientRect();
         if (rect.top < window.innerHeight * 0.92) {
-          el.classList.add("is-in");
+          el.setAttribute("data-in", "");
           return;
         }
         io.observe(el);
