@@ -36,11 +36,14 @@ export function RevealEngine() {
       });
     };
 
-    scan();
+    // defer the first pass until after hydration settles so no server-rendered
+    // attribute is mutated mid-hydration
+    const first = window.setTimeout(scan, 150);
     const mo = new MutationObserver(() => scan());
     mo.observe(document.body, { childList: true, subtree: true });
 
     return () => {
+      window.clearTimeout(first);
       mo.disconnect();
       io.disconnect();
     };
