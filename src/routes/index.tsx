@@ -26,7 +26,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "AI systems, automation, interfaces and creative development. Explore the work and the lab.",
+          "Personal digital environment of Said: AI systems, automation, interfaces and creative development. Explore the work, the lab and the thinking.",
       },
     ],
   }),

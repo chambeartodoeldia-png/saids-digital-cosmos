@@ -75,22 +75,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SAID — Builder of systems, interfaces & machines" },
+      { title: "SAID — I build things that shouldn't exist yet" },
       {
         name: "description",
         content:
-          "Said builds software, AI systems, automation and interfaces. A personal digital environment rather than a portfolio.",
+          "Personal digital environment of Said: AI systems, automation, interfaces and creative development. Explore the work, the lab and the thinking.",
       },
       { name: "author", content: "Said" },
       { name: "theme-color", content: "#0b0b0c" },
-      { property: "og:title", content: "SAID — Builder of systems & interfaces" },
+      { property: "og:title", content: "SAID — I build things that shouldn't exist yet" },
       {
         property: "og:description",
         content:
-          "Software, AI systems, automation and interface craft. Explore the work and the lab.",
+          "Personal digital environment of Said: AI systems, automation, interfaces and creative development. Explore the work, the lab and the thinking.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "SAID — I build things that shouldn't exist yet" },
+      { name: "twitter:description", content: "Personal digital environment of Said: AI systems, automation, interfaces and creative development. Explore the work, the lab and the thinking." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a037445c-7400-4b15-b46c-ec0fe580e903/id-preview-64f55990--8548caed-1836-4315-ab5f-526c82302614.lovable.app-1785638626187.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a037445c-7400-4b15-b46c-ec0fe580e903/id-preview-64f55990--8548caed-1836-4315-ab5f-526c82302614.lovable.app-1785638626187.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
