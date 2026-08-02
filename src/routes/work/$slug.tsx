@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArtifactVisual } from "@/components/site/artifact-visual";
 import { SiteFooter } from "@/components/site/site-footer";
-import { projects } from "@/lib/portfolio-data";
+import { projects, type Project } from "@/lib/portfolio-data";
 
 export const Route = createFileRoute("/work/$slug")({
   loader: ({ params }) => {
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/work/$slug")({
 });
 
 function ProjectPage() {
-  const { project } = Route.useLoaderData();
+  const { project } = Route.useLoaderData() as { project: Project };
   const index = projects.findIndex((p) => p.slug === project.slug);
   const next = projects[(index + 1) % projects.length]!;
 
