@@ -7,7 +7,7 @@ export function SiteFooter() {
       <div className="shell flex flex-col gap-8 py-10 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-title font-medium tracking-tight">SAID</p>
-          <p className="label mt-2">BUILT BY HAND — 2026</p>
+          <p className="label mt-2">HECHO A MANO — 2026</p>
         </div>
 
         <ul className="flex flex-wrap gap-x-6 gap-y-2">
@@ -30,7 +30,7 @@ export function SiteFooter() {
               data-cursor="link"
               className="label underline-sweep transition-colors duration-500 hover:text-foreground"
             >
-              THE LAB
+              LAB
             </Link>
           </li>
         </ul>

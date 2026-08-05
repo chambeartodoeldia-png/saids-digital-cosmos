@@ -2,32 +2,29 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { HeroField } from "@/components/site/hero-field";
 import { ProjectRow } from "@/components/site/project-row";
 import { SiteFooter } from "@/components/site/site-footer";
-import {
-  capabilities,
-  labItems,
-  manifesto,
-  projects,
-} from "@/lib/portfolio-data";
+import { capabilities, labItems, projects } from "@/lib/portfolio-data";
 import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SAID — I build things that shouldn't exist yet" },
+      { title: "SAID — Estoy construyendo mi propio camino" },
       {
         name: "description",
         content:
-          "Personal digital environment of Said: AI systems, automation, interfaces and creative development. Explore the work, the lab and the thinking.",
+          "Espacio personal de Said: AI, código, sistemas, automatización y diseño. Un constructor que no cabe en una sola categoría.",
       },
       {
         property: "og:title",
-        content: "SAID — I build things that shouldn't exist yet",
+        content: "SAID — Estoy construyendo mi propio camino",
       },
       {
         property: "og:description",
         content:
-          "Personal digital environment of Said: AI systems, automation, interfaces and creative development. Explore the work, the lab and the thinking.",
+          "Espacio personal de Said: AI, código, sistemas, automatización y diseño.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
@@ -47,81 +44,94 @@ function Index() {
   );
 }
 
+const disciplines = ["AI", "CÓDIGO", "SISTEMAS", "AUTOMATIZACIÓN", "DISEÑO", "WEB"];
+
 function Hero() {
   return (
     <section className="relative flex min-h-[100svh] flex-col justify-between overflow-hidden pt-24">
       <HeroField />
 
+      {/* composición asimétrica: nombre a la izquierda, frase desplazada */}
       <div className="shell relative flex flex-1 flex-col justify-center">
-        <p
-          className="label"
-          data-reveal="fade"
-          style={{ "--reveal-delay": "80ms" } as React.CSSProperties}
-        >
-          SAID — INDEPENDENT BUILDER
-        </p>
+        <div className="grid grid-cols-12 items-end gap-y-8">
+          <div className="col-span-12 md:col-span-8">
+            <p
+              className="label"
+              data-reveal="fade"
+              style={{ "--reveal-delay": "80ms" } as React.CSSProperties}
+            >
+              ESPACIO PERSONAL — 01
+            </p>
 
-        <h1 className="mt-6 max-w-[16ch] text-display font-medium">
-          <span className="block overflow-hidden">
-            <span
-              className="block"
-              data-reveal
-              style={{ "--reveal-delay": "160ms" } as React.CSSProperties}
-            >
-              I build
-            </span>
-          </span>
-          <span className="block overflow-hidden">
-            <span
-              className="block"
-              data-reveal
-              style={{ "--reveal-delay": "280ms" } as React.CSSProperties}
-            >
-              things that
-            </span>
-          </span>
-          <span className="block overflow-hidden">
-            <span
-              className="block text-muted-foreground"
-              data-reveal
-              style={{ "--reveal-delay": "400ms" } as React.CSSProperties}
-            >
-              shouldn&apos;t
-            </span>
-          </span>
-          <span className="block overflow-hidden">
-            <span
-              className="block"
-              data-reveal
-              style={{ "--reveal-delay": "520ms" } as React.CSSProperties}
-            >
-              exist yet<span className="text-accent">.</span>
-            </span>
-          </span>
-        </h1>
+            <h1 className="mt-5 text-display font-medium leading-[0.82]">
+              <span className="block overflow-hidden">
+                <span
+                  className="block"
+                  data-reveal
+                  style={{ "--reveal-delay": "160ms" } as React.CSSProperties}
+                >
+                  SAID
+                </span>
+              </span>
+            </h1>
 
-        <p
-          className="mt-10 max-w-[46ch] text-sm leading-relaxed text-muted-foreground md:text-base"
-          data-reveal
-          style={{ "--reveal-delay": "660ms" } as React.CSSProperties}
-        >
-          {manifesto[1]} I work between engineering, design and AI — usually on
-          the parts nobody has named yet.
-        </p>
+            <ul
+              className="mt-7 flex flex-wrap gap-x-5 gap-y-2"
+              data-reveal="fade"
+              style={{ "--reveal-delay": "340ms" } as React.CSSProperties}
+            >
+              {disciplines.map((d, i) => (
+                <li key={d} className="label flex items-center gap-5">
+                  {i > 0 && <span className="text-dim/50">/</span>}
+                  <span className="transition-colors duration-500 hover:text-foreground">
+                    {d}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="col-span-12 md:col-span-4 md:pb-3">
+            <p
+              className="text-title font-medium tracking-tight"
+              data-reveal="mask"
+              style={{ "--reveal-delay": "460ms" } as React.CSSProperties}
+            >
+              Estoy construyendo
+              <br />
+              mi propio camino
+              <span className="text-accent">.</span>
+            </p>
+            <p
+              className="mt-6 max-w-[38ch] text-sm leading-relaxed text-muted-foreground"
+              data-reveal
+              style={{ "--reveal-delay": "620ms" } as React.CSSProperties}
+            >
+              No estudio una carrera todavía y ya escribo el software que quiero
+              usar. Trabajo entre AI, código y diseño, normalmente en la parte
+              que aún no tiene nombre.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="shell relative hairline-t">
         <div className="grid grid-cols-2 gap-y-4 py-5 md:grid-cols-4">
           {[
-            { k: "DISCIPLINES", v: "ENGINEERING · DESIGN · AI" },
-            { k: "MODE", v: "BUILD, THEN REFINE" },
-            { k: "STATUS", v: "OPEN TO COLLABORATION" },
-            { k: "INDEX", v: `${projects.length} PROJECTS / ${labItems.length} LAB` },
+            { k: "MODO", v: "CONSTRUIR, LUEGO AFINAR" },
+            { k: "AHORA", v: "AI · AUTOMATIZACIÓN · INTERFACES" },
+            { k: "ESTADO", v: "ABIERTO A COLABORAR" },
+            {
+              k: "ÍNDICE",
+              v: `${projects.length} PROYECTOS / ${labItems.length} LAB`,
+            },
           ].map((row, i) => (
             <div
               key={row.k}
               data-reveal="fade"
-              style={{ "--reveal-delay": `${700 + i * 80}ms` } as React.CSSProperties}
+              style={
+                { "--reveal-delay": `${700 + i * 80}ms` } as React.CSSProperties
+              }
             >
               <p className="label">{row.k}</p>
               <p className="mt-1.5 text-xs text-muted-foreground">{row.v}</p>
@@ -137,24 +147,24 @@ function Statement() {
   return (
     <section className="shell py-[16vh]">
       <div className="grid grid-cols-12 gap-y-10">
-        <p className="label col-span-12 md:col-span-3">01 — POSITION</p>
+        <p className="label col-span-12 md:col-span-3">02 — POSICIÓN</p>
         <div className="col-span-12 md:col-span-9">
           <p
             className="text-headline font-medium tracking-tight"
             data-reveal="mask"
           >
-            I cannot be reduced
+            No entro
             <br />
-            to a category<span className="text-accent">.</span>
+            en una categoría<span className="text-accent">.</span>
           </p>
           <p
             className="mt-10 max-w-[54ch] text-sm leading-relaxed text-muted-foreground md:text-base"
             data-reveal
             style={{ "--reveal-delay": "160ms" } as React.CSSProperties}
           >
-            Not a developer with design opinions, not a designer who writes
-            scripts. I build complete things: the system underneath, the
-            interface on top, and the automation that keeps it alive.
+            No soy solo alguien que programa, ni solo alguien que diseña.
+            Construyo cosas completas: el sistema por debajo, la interfaz por
+            encima y la automatización que lo mantiene vivo.
           </p>
         </div>
       </div>
@@ -166,13 +176,13 @@ function WorkIndex() {
   return (
     <section id="work" className="shell pb-[14vh]">
       <div className="mb-8 flex items-end justify-between">
-        <p className="label">02 — SELECTED WORK</p>
+        <p className="label">03 — TRABAJO</p>
         <Link
           to="/work"
           data-cursor="link"
           className="label underline-sweep text-accent"
         >
-          FULL INDEX →
+          ÍNDICE COMPLETO →
         </Link>
       </div>
       <ul>
@@ -186,11 +196,13 @@ function WorkIndex() {
 }
 
 function Capabilities() {
-  const [active, setActive] = useState<string | null>(capabilities[0]?.key ?? null);
+  const [active, setActive] = useState<string | null>(
+    capabilities[0]?.key ?? null,
+  );
 
   return (
     <section className="shell pb-[14vh]">
-      <p className="label mb-8">03 — CAPABILITIES</p>
+      <p className="label mb-8">04 — CÓMO TRABAJO</p>
       <ul>
         {capabilities.map((c) => {
           const open = active === c.key;
@@ -251,13 +263,13 @@ function LabPreview() {
   return (
     <section className="shell pb-[14vh]">
       <div className="mb-8 flex items-end justify-between">
-        <p className="label">04 — THE LAB</p>
+        <p className="label">05 — LAB</p>
         <Link
           to="/lab"
           data-cursor="link"
           className="label underline-sweep text-accent"
         >
-          ENTER THE LAB →
+          ENTRAR AL LAB →
         </Link>
       </div>
       <div className="grid gap-px border border-border bg-border md:grid-cols-3">
@@ -290,20 +302,20 @@ function ContactCall() {
   return (
     <section className="shell pb-[14vh]">
       <div className="hairline-t pt-10">
-        <p className="label">05 — NEXT</p>
+        <p className="label">06 — SIGUIENTE</p>
         <Link
           to="/contact"
           data-cursor="artifact"
-          data-cursor-label="WRITE"
+          data-cursor-label="ESCRIBIR"
           className="group mt-6 block"
         >
           <h2
             className="text-display font-medium tracking-tight"
             data-reveal="mask"
           >
-            LET&apos;S BUILD
+            CONSTRUYAMOS
             <br />
-            SOMETHING
+            ALGO
             <span className="inline-block text-accent transition-transform duration-[900ms] ease-out-expo group-hover:translate-x-4">
               .
             </span>
