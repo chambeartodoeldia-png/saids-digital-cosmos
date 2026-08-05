@@ -1,49 +1,59 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteFooter } from "@/components/site/site-footer";
-import { labItems, type LabItem } from "@/lib/portfolio-data";
+import { labItems, type LabItem, type LabStatus } from "@/lib/portfolio-data";
 
 export const Route = createFileRoute("/lab")({
   head: () => ({
     meta: [
-      { title: "The Lab — SAID" },
+      { title: "Lab — SAID" },
       {
         name: "description",
         content:
-          "A living archive of tools, AI experiments, automation systems and prototypes Said is building right now.",
+          "Archivo vivo de lo que Said está construyendo, probando y aprendiendo ahora mismo: AI, automatizaciones, interfaces y prototipos.",
       },
-      { property: "og:title", content: "The Lab — SAID" },
+      { property: "og:title", content: "Lab — SAID" },
       {
         property: "og:description",
         content:
-          "A living archive of tools, experiments, prototypes and things currently being built.",
+          "Archivo vivo: lo que estoy construyendo, probando y aprendiendo ahora mismo.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: LabPage,
 });
 
-const filters = ["ALL", "BUILDING", "LIVE", "EXPLORING", "ARCHIVED"] as const;
+const filters = [
+  "TODO",
+  "CONSTRUYENDO",
+  "EN VIVO",
+  "EXPLORANDO",
+  "ARCHIVADO",
+] as const;
 
 function LabPage() {
-  const [filter, setFilter] = useState<(typeof filters)[number]>("ALL");
+  const [filter, setFilter] = useState<(typeof filters)[number]>("TODO");
   const shown: LabItem[] =
-    filter === "ALL" ? labItems : labItems.filter((i) => i.status === filter);
+    filter === "TODO"
+      ? labItems
+      : labItems.filter((i) => i.status === (filter as LabStatus));
 
   return (
     <main>
       <header className="shell pb-[8vh] pt-[22vh]">
-        <p className="label">INDEX — 04</p>
+        <p className="label">ÍNDICE — 03</p>
         <h1 className="mt-6 text-display font-medium" data-reveal="mask">
-          THE LAB
+          LAB
         </h1>
         <p
           className="mt-8 max-w-[46ch] text-sm leading-relaxed text-muted-foreground md:text-base"
           data-reveal
           style={{ "--reveal-delay": "180ms" } as React.CSSProperties}
         >
-          Not experiments for their own sake — an archive of things in progress.
-          Some become work. Some stay here.
+          Lo que estoy construyendo, probando o aprendiendo ahora. Algunas cosas
+          se convierten en trabajo. Otras se quedan aquí.
         </p>
       </header>
 
@@ -59,9 +69,10 @@ function LabPage() {
               >
                 {f}
                 <span className="ml-2 text-dim">
-                  {f === "ALL"
+                  {f === "TODO"
                     ? labItems.length
-                    : labItems.filter((i) => i.status === f).length}
+                    : labItems.filter((i) => i.status === (f as LabStatus))
+                        .length}
                 </span>
               </button>
             </li>
@@ -79,7 +90,9 @@ function LabPage() {
                 style={{ "--reveal-delay": `${i * 60}ms` } as React.CSSProperties}
                 className="grid grid-cols-12 items-baseline gap-x-4 gap-y-3 py-7 transition-[padding] duration-700 ease-out-expo group-hover:pl-2"
               >
-                <span className="label col-span-3 md:col-span-1">{item.code}</span>
+                <span className="label col-span-3 md:col-span-1">
+                  {item.code}
+                </span>
                 <h2 className="col-span-9 text-title font-medium tracking-tight md:col-span-4">
                   {item.title}
                 </h2>
@@ -92,21 +105,29 @@ function LabPage() {
                     <span
                       className="inline-block size-1.5 rounded-full bg-accent"
                       style={{
-                        opacity: item.status === "ARCHIVED" ? 0.3 : 1,
+                        opacity: item.status === "ARCHIVADO" ? 0.3 : 1,
                         animation:
-                          item.status === "BUILDING"
+                          item.status === "CONSTRUYENDO"
                             ? "pulse 2.4s var(--ease-in-out-quint) infinite"
                             : undefined,
                       }}
                     />
                     {item.status}
                   </span>
-                  <span className="label hidden text-dim md:inline">{item.year}</span>
+                  <span className="label hidden text-dim md:inline">
+                    {item.year}
+                  </span>
                 </div>
               </div>
             </li>
           ))}
         </ul>
+
+        {shown.length === 0 && (
+          <p className="label py-[8vh] text-dim">
+            NADA EN ESTE ESTADO POR AHORA.
+          </p>
+        )}
       </section>
 
       <SiteFooter />
