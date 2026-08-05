@@ -45,7 +45,7 @@ export function SiteNav() {
             data-cursor="link"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? "Cerrar menú" : "Abrir menú"}
             className="group flex items-center gap-2.5"
           >
             <span className="label text-foreground">{open ? "CERRAR" : "MENU"}</span>
