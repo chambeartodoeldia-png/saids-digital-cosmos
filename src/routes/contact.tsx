@@ -7,28 +7,30 @@ import { socials } from "@/lib/portfolio-data";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — SAID" },
+      { title: "Contacto — SAID" },
       {
         name: "description",
         content:
-          "Tell Said what you are building. Selected collaborations across AI systems, automation and interface work.",
+          "Cuéntame qué estás construyendo. Said: AI, automatización, sistemas e interfaces.",
       },
-      { property: "og:title", content: "Contact — SAID" },
+      { property: "og:title", content: "Contacto — SAID" },
       {
         property: "og:description",
         content:
-          "Tell Said what you are building — selected collaborations in AI, automation and interface work.",
+          "Cuéntame qué estás construyendo: AI, automatización, sistemas e interfaces.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ContactPage,
 });
 
 const intents = [
-  "A product",
-  "An AI system",
-  "An automation",
-  "Something undefined",
+  "Un producto",
+  "Un sistema con AI",
+  "Una automatización",
+  "Algo sin definir",
 ];
 
 function ContactPage() {
@@ -40,32 +42,32 @@ function ContactPage() {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     if (!form.get("name") || !form.get("email") || !form.get("message")) {
-      toast.error("Three fields. All of them matter.");
+      toast.error("Tres campos. Los tres importan.");
       return;
     }
     setSending(true);
     window.setTimeout(() => {
       setSending(false);
       setSent(true);
-      toast.success("Received. I read everything.");
+      toast.success("Recibido. Lo leo todo.");
     }, 900);
   };
 
   return (
     <main>
       <header className="shell pb-[8vh] pt-[22vh]">
-        <p className="label">INDEX — 05</p>
+        <p className="label">ÍNDICE — 04</p>
         <h1 className="mt-6 text-display font-medium" data-reveal="mask">
-          LET&apos;S BUILD
+          CONSTRUYAMOS
           <br />
-          SOMETHING<span className="text-accent">.</span>
+          ALGO<span className="text-accent">.</span>
         </h1>
       </header>
 
       <section className="shell hairline-t py-[10vh]">
         <div className="grid grid-cols-12 gap-y-12">
           <div className="col-span-12 md:col-span-4">
-            <p className="label">WHAT ARE YOU BUILDING?</p>
+            <p className="label">¿QUÉ ESTÁS CONSTRUYENDO?</p>
             <ul className="mt-6">
               {intents.map((it) => {
                 const active = intent === it;
@@ -88,7 +90,9 @@ function ContactPage() {
                         className="label transition-transform duration-700 ease-out-expo"
                         style={{
                           color: active ? "var(--accent)" : undefined,
-                          transform: active ? "translateX(0)" : "translateX(-6px)",
+                          transform: active
+                            ? "translateX(0)"
+                            : "translateX(-6px)",
                           opacity: active ? 1 : 0.4,
                         }}
                       >
@@ -117,7 +121,7 @@ function ContactPage() {
             </ul>
           </div>
 
-          {/* form reveals progressively, only after an intent is chosen */}
+          {/* el formulario aparece solo cuando eliges un punto de partida */}
           <div className="col-span-12 md:col-span-7 md:col-start-6">
             <div
               className="grid transition-[grid-template-rows,opacity] duration-[900ms] ease-out-expo"
@@ -129,21 +133,24 @@ function ContactPage() {
               <div className="min-h-0 overflow-hidden">
                 {sent ? (
                   <div className="border border-border bg-surface p-8">
-                    <p className="label text-accent">MESSAGE RECEIVED</p>
+                    <p className="label text-accent">MENSAJE RECIBIDO</p>
                     <p className="mt-6 text-title font-medium tracking-tight">
-                      Thanks — I&apos;ll come back to you.
+                      Gracias — te respondo pronto.
                     </p>
                   </div>
                 ) : (
                   <form onSubmit={submit} className="border-t border-border">
                     <p className="label py-5">
-                      SUBJECT — {intent?.toUpperCase()}
+                      TEMA — {intent?.toUpperCase()}
                     </p>
                     {[
-                      { name: "name", label: "NAME", type: "text" },
+                      { name: "name", label: "NOMBRE", type: "text" },
                       { name: "email", label: "EMAIL", type: "email" },
                     ].map((f) => (
-                      <div key={f.name} className="hairline-t flex items-center gap-6 py-4">
+                      <div
+                        key={f.name}
+                        className="hairline-t flex items-center gap-6 py-4"
+                      >
                         <label htmlFor={f.name} className="label w-24 shrink-0">
                           {f.label}
                         </label>
@@ -158,8 +165,11 @@ function ContactPage() {
                       </div>
                     ))}
                     <div className="hairline-t flex items-start gap-6 py-4">
-                      <label htmlFor="message" className="label w-24 shrink-0 pt-1">
-                        MESSAGE
+                      <label
+                        htmlFor="message"
+                        className="label w-24 shrink-0 pt-1"
+                      >
+                        MENSAJE
                       </label>
                       <textarea
                         id="message"
@@ -171,24 +181,26 @@ function ContactPage() {
                     </div>
                     <div className="hairline-t flex items-center justify-between py-6">
                       <p className="label text-dim">
-                        {sending ? "TRANSMITTING" : "READY"}
+                        {sending ? "ENVIANDO" : "LISTO"}
                       </p>
                       <button
                         type="submit"
                         data-cursor="artifact"
-                        data-cursor-label="SEND"
+                        data-cursor-label="ENVIAR"
                         disabled={sending}
                         className="group relative overflow-hidden border border-border-strong px-7 py-3.5 disabled:opacity-60"
                       >
                         <span
                           className="absolute inset-0 bg-accent transition-transform duration-[700ms] ease-out-expo"
                           style={{
-                            transform: sending ? "translateY(0)" : "translateY(101%)",
+                            transform: sending
+                              ? "translateY(0)"
+                              : "translateY(101%)",
                           }}
                         />
                         <span className="absolute inset-0 translate-y-full bg-accent transition-transform duration-[700ms] ease-out-expo group-hover:translate-y-0" />
                         <span className="label relative text-foreground transition-colors duration-500 group-hover:text-accent-foreground">
-                          SEND MESSAGE
+                          ENVIAR MENSAJE
                         </span>
                       </button>
                     </div>
@@ -199,7 +211,7 @@ function ContactPage() {
 
             {!intent && (
               <p className="label max-w-[30ch] leading-relaxed text-dim">
-                PICK A STARTING POINT ON THE LEFT AND THE REST WILL APPEAR.
+                ELIGE UN PUNTO DE PARTIDA Y APARECE EL RESTO.
               </p>
             )}
           </div>

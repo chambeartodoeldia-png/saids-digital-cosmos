@@ -20,16 +20,16 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-6">
       <div className="max-w-md">
-        <p className="label">404 — NOT FOUND</p>
+        <p className="label">404 — NO EXISTE</p>
         <h1 className="mt-4 text-headline font-medium tracking-tight">
-          This does not exist yet.
+          Esto todavía no existe.
         </h1>
         <Link
           to="/"
           data-cursor="link"
           className="label mt-8 inline-flex text-accent underline-sweep"
         >
-          RETURN →
+          VOLVER →
         </Link>
       </div>
     </div>
@@ -46,9 +46,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-6">
       <div className="max-w-md">
-        <p className="label">ERROR — UNEXPECTED STATE</p>
+        <p className="label">ERROR — ESTADO INESPERADO</p>
         <h1 className="mt-4 text-headline font-medium tracking-tight">
-          Something broke.
+          Algo se rompió.
         </h1>
         <div className="mt-8 flex gap-6">
           <button
@@ -59,10 +59,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             }}
             className="label text-accent underline-sweep"
           >
-            RETRY →
+            REINTENTAR →
           </button>
           <a href="/" data-cursor="link" className="label underline-sweep">
-            HOME →
+            INICIO →
           </a>
         </div>
       </div>
@@ -75,24 +75,34 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SAID — I build things that shouldn't exist yet" },
+      { title: "SAID — Estoy construyendo mi propio camino" },
       {
         name: "description",
         content:
-          "Personal digital environment of Said: AI systems, automation, interfaces and creative development. Explore the work, the lab and the thinking.",
+          "Espacio personal de Said: AI, código, sistemas, automatización y diseño.",
       },
       { name: "author", content: "Said" },
       { name: "theme-color", content: "#0b0b0c" },
-      { property: "og:title", content: "SAID — I build things that shouldn't exist yet" },
+      {
+        property: "og:title",
+        content: "SAID — Estoy construyendo mi propio camino",
+      },
       {
         property: "og:description",
         content:
-          "Personal digital environment of Said: AI systems, automation, interfaces and creative development. Explore the work, the lab and the thinking.",
+          "Espacio personal de Said: AI, código, sistemas, automatización y diseño.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "SAID — I build things that shouldn't exist yet" },
-      { name: "twitter:description", content: "Personal digital environment of Said: AI systems, automation, interfaces and creative development. Explore the work, the lab and the thinking." },
+      {
+        name: "twitter:title",
+        content: "SAID — Estoy construyendo mi propio camino",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Espacio personal de Said: AI, código, sistemas, automatización y diseño.",
+      },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a037445c-7400-4b15-b46c-ec0fe580e903/id-preview-64f55990--8548caed-1836-4315-ab5f-526c82302614.lovable.app-1785638626187.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a037445c-7400-4b15-b46c-ec0fe580e903/id-preview-64f55990--8548caed-1836-4315-ab5f-526c82302614.lovable.app-1785638626187.png" },
     ],
@@ -119,7 +129,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="es" className="dark">
       <head>
         <HeadContent />
       </head>

@@ -3,8 +3,8 @@ import { ArtifactVisual } from "./artifact-visual";
 import type { Project } from "@/lib/portfolio-data";
 
 /**
- * A project is an artifact, not a card: a full-width hairline register that
- * opens under the pointer.
+ * Un proyecto es un artefacto, no una tarjeta: un registro a todo el ancho
+ * que se abre bajo el puntero.
  */
 export function ProjectRow({ project, i }: { project: Project; i: number }) {
   return (
@@ -13,7 +13,7 @@ export function ProjectRow({ project, i }: { project: Project; i: number }) {
         to="/work/$slug"
         params={{ slug: project.slug }}
         data-cursor="artifact"
-        data-cursor-label="OPEN"
+        data-cursor-label={project.placeholder ? "PRONTO" : "ABRIR"}
         data-reveal
         style={{ "--reveal-delay": `${i * 90}ms` } as React.CSSProperties}
         className="block"
@@ -26,7 +26,10 @@ export function ProjectRow({ project, i }: { project: Project; i: number }) {
           </div>
 
           <div className="col-span-10 md:col-span-4">
-            <h3 className="text-title font-medium tracking-tight transition-transform duration-[900ms] ease-out-expo group-hover/row:translate-x-1.5">
+            <h3
+              className="text-title font-medium tracking-tight transition-transform duration-[900ms] ease-out-expo group-hover/row:translate-x-1.5"
+              style={{ color: project.placeholder ? "var(--dim)" : undefined }}
+            >
               {project.title}
             </h3>
             <p className="label mt-2 text-dim transition-colors duration-500 group-hover/row:text-muted-foreground">
@@ -36,10 +39,10 @@ export function ProjectRow({ project, i }: { project: Project; i: number }) {
 
           <div className="col-span-12 md:col-span-4">
             <p className="max-w-[42ch] text-sm leading-relaxed text-muted-foreground">
-              {project.summary}
+              {project.description}
             </p>
             <p className="label mt-3 opacity-0 transition-opacity duration-700 group-hover/row:opacity-100">
-              {project.stack.slice(0, 3).join(" · ")}
+              {project.technologies.slice(0, 3).join(" · ")}
             </p>
           </div>
 
@@ -47,11 +50,11 @@ export function ProjectRow({ project, i }: { project: Project; i: number }) {
             <span className="label">{project.year}</span>
             <span className="label text-accent">{project.status}</span>
             <span className="label hidden transition-transform duration-700 ease-out-expo group-hover/row:translate-x-1.5 md:inline">
-              EXPLORE →
+              EXPLORAR →
             </span>
           </div>
 
-          {/* preview opens on hover — height + scale, transform-based */}
+          {/* la vista previa se abre al pasar el puntero */}
           <div className="col-span-12 max-h-0 overflow-hidden transition-[max-height] duration-[900ms] ease-out-expo group-hover/row:max-h-[26rem] md:col-span-11 md:col-start-2">
             <div className="mt-4 overflow-hidden border border-border bg-surface">
               <ArtifactVisual

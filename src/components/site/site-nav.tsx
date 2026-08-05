@@ -45,10 +45,10 @@ export function SiteNav() {
             data-cursor="link"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? "Cerrar menú" : "Abrir menú"}
             className="group flex items-center gap-2.5"
           >
-            <span className="label text-foreground">{open ? "CLOSE" : "MENU"}</span>
+            <span className="label text-foreground">{open ? "CERRAR" : "MENU"}</span>
             <span className="relative grid size-3 place-items-center">
               <span className="absolute h-px w-3 bg-foreground transition-transform duration-500 ease-out-expo" />
               <span
@@ -98,7 +98,7 @@ export function SiteNav() {
                       {item.label}
                     </span>
                     <span className="ml-auto label opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                      ENTER →
+                      ENTRAR →
                     </span>
                   </Link>
                 </li>
@@ -111,8 +111,8 @@ export function SiteNav() {
             style={{ opacity: open ? 1 : 0, transitionDelay: "500ms" }}
           >
             <p className="label max-w-[28ch] leading-relaxed text-muted-foreground">
-              A digital environment, not a résumé. Everything here was built by
-              hand.
+              Un espacio personal, no un curriculum. Todo esto está hecho a
+              mano.
             </p>
             <ul className="flex flex-wrap gap-x-6 gap-y-2">
               {socials.map((s) => (
