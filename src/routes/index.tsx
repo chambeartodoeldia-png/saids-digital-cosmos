@@ -3,7 +3,6 @@ import { CapabilitiesOrbital } from "@/components/site/capabilities-orbital";
 import { HeroField } from "@/components/site/hero-field";
 import { HeroShader } from "@/components/site/hero-shader";
 import { LabCard } from "@/components/site/lab-card";
-import { PlanetGate } from "@/components/site/planet-gate";
 import { ProjectRow } from "@/components/site/project-row";
 import { SectionTransition } from "@/components/site/section-transition";
 import { SiteFooter } from "@/components/site/site-footer";
@@ -37,16 +36,11 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <main>
-      {/*
-        Fuera del <section> del hero a propósito: el hero tiene
-        overflow-hidden y recortaría el zoom. Al ser fixed, el planeta no
-        necesita estar dentro para verse dentro.
-      */}
-      <PlanetGate />
+      <Hero />
 
       {/*
-        El hero no se envuelve: es lo primero que se ve y no entra desde
-        ningún sitio. El salto de la zona 01 a la 02 lo hace el planeta.
+        El hero no se envuelve: es lo primero que se ve, no entra desde
+        ningún sitio y su fondo (shader + rejilla) es a pantalla completa.
 
         De la 02 en adelante cada zona entra con una coreografía distinta,
         para que bajar la página se sienta una secuencia de saltos y no un
