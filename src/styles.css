@@ -213,6 +213,16 @@
   /* bordes teñidos, para lo que deba leerse activo o seleccionado */
   --border-accent: oklch(0.78 0.168 61 / 30%);
   --border-accent-2: oklch(0.755 0.108 197 / 30%);
+
+  /*
+   * PUNTERO — azul brillante y violeta. Van aparte de los acentos de la
+   * paleta a propósito: el ámbar es la señal del contenido (enlaces, CTAs) y
+   * el puntero no debe competir con esa señal ni robársela. Croma alto y
+   * luminancia alta porque sólo se pintan sobre fondo oscuro y en piezas de
+   * pocos píxeles, donde un color apagado no se lee como luz.
+   */
+  --cursor-blue: oklch(0.74 0.175 258);
+  --cursor-violet: oklch(0.68 0.21 292);
 }
 
 .dark {
@@ -430,5 +440,238 @@
 
   .underline-sweep:hover::after {
     transform: scaleX(1);
+  }
+}
+
+/*
+ * ── Puntero ───────────────────────────────────────────────────────────────
+ *
+ * Un solo cuerpo: un punto azul. El aro que iba detrás se quitó. El estado se
+ * comunica con tamaño y resplandor del propio punto — nada persigue al cursor.
+ */
+.said-dot {
+  width: var(--dot-size, 7px);
+  height: var(--dot-size, 7px);
+  background: var(--cursor-blue);
+  box-shadow:
+    0 0 6px 1px color-mix(in oklab, var(--cursor-blue) 70%, transparent),
+    0 0 18px 4px color-mix(in oklab, var(--cursor-violet) 45%, transparent);
+  transition:
+    width 260ms var(--ease-out-expo),
+    height 260ms var(--ease-out-expo),
+    box-shadow 260ms var(--ease-out-expo),
+    background-color 260ms var(--ease-out-expo);
+}
+
+.said-dot[data-cursor-state="link"] {
+  --dot-size: 13px;
+  background: color-mix(in oklab, var(--cursor-blue) 75%, var(--cursor-violet));
+  box-shadow:
+    0 0 10px 2px color-mix(in oklab, var(--cursor-blue) 80%, transparent),
+    0 0 30px 8px color-mix(in oklab, var(--cursor-violet) 55%, transparent);
+}
+
+.said-dot[data-cursor-state="artifact"] {
+  --dot-size: 18px;
+  background: var(--cursor-violet);
+  box-shadow:
+    0 0 14px 3px color-mix(in oklab, var(--cursor-violet) 85%, transparent),
+    0 0 42px 12px color-mix(in oklab, var(--cursor-blue) 55%, transparent);
+}
+
+/* La etiqueta sale al lado del punto, sin disco detrás que la sostenga. */
+.said-dot-label {
+  margin-left: 1.1rem;
+  color: var(--cursor-blue);
+  text-shadow: 0 0 12px color-mix(in oklab, var(--cursor-blue) 60%, transparent);
+  transition: opacity 300ms var(--ease-out-expo);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .said-dot,
+  .said-dot-label {
+    transition: none;
+  }
+}
+
+/*
+ * ── Cuerpo con anillo del hero ────────────────────────────────────────────
+ *
+ * Va fuera de @layer: clases propias, no compiten con ninguna utilidad, y sin
+ * capa ganan sin pelear especificidad. La estructura está explicada en
+ * hero-orb.tsx; aquí está la geometría y la luz.
+ */
+.hero-orb {
+  --orb-size: clamp(104px, 12vw, 190px);
+  --orb-x: 79%;
+  --orb-y: 27%;
+
+  position: absolute;
+  left: var(--orb-x);
+  top: var(--orb-y);
+  width: var(--orb-size);
+  height: var(--orb-size);
+  margin-left: calc(var(--orb-size) / -2);
+  margin-top: calc(var(--orb-size) / -2);
+  pointer-events: none;
+  /* Sobre el shader y la rejilla, por debajo del contenido del hero. */
+  z-index: 0;
+}
+
+/*
+ * En móvil manda el ANILLO, no el cuerpo: mide ~2.5 veces el diámetro, así
+ * que a 96px y al 77% se salía 32px por la derecha y el hero lo cortaba en
+ * seco contra el borde. 84px al 68% deja el anillo entero dentro de 375px.
+ */
+@media (max-width: 767px) {
+  .hero-orb {
+    --orb-size: 84px;
+    --orb-x: 68%;
+    --orb-y: 18%;
+  }
+}
+
+/* resplandor general, para que el objeto tenga atmósfera y no un borde seco */
+.orb-halo {
+  position: absolute;
+  inset: -70%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    oklch(0.62 0.17 258 / 22%),
+    oklch(0.58 0.19 285 / 10%) 40%,
+    transparent 68%
+  );
+}
+
+/*
+ * Envoltorio del recorte. NO lleva transform a propósito: así el clip-path
+ * corta en coordenadas de pantalla y parte el anillo por su mitad visual.
+ * Si el recorte fuese dentro del disco girado, cortaría en diagonal.
+ */
+.orb-plane {
+  position: absolute;
+  inset: 0;
+}
+
+.orb-plane--back {
+  clip-path: inset(0 -100% 50% -100%);
+}
+
+.orb-plane--front {
+  clip-path: inset(50% -100% 0 -100%);
+}
+
+/* el plano del anillo: un círculo visto casi de canto */
+.orb-disc {
+  position: absolute;
+  inset: -52%;
+  transform: rotateX(76deg) rotate(-14deg);
+}
+
+/*
+ * El material que orbita. Gira DENTRO del plano ya inclinado, así que se lee
+ * como materia dando vueltas y no como un anillo que se cae de lado.
+ *
+ * El conic-gradient concentra el brillo en un tramo: eso es lo que hace que
+ * se note el giro. Un anillo de brillo uniforme girando es indistinguible de
+ * uno quieto.
+ */
+.orb-mat {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    oklch(0.45 0.13 262 / 25%) 0deg,
+    oklch(0.72 0.19 258 / 85%) 55deg,
+    oklch(0.92 0.14 240) 100deg,
+    oklch(0.75 0.2 285 / 90%) 150deg,
+    oklch(0.5 0.16 280 / 40%) 215deg,
+    oklch(0.4 0.12 265 / 18%) 290deg,
+    oklch(0.45 0.13 262 / 25%) 360deg
+  );
+  /* recorta el relleno a una banda: sin esto sería un disco lleno */
+  mask: radial-gradient(
+    closest-side,
+    transparent 58%,
+    #000 66%,
+    #000 88%,
+    transparent 100%
+  );
+  filter: blur(1.5px);
+  animation: orb-orbit 13s linear infinite;
+}
+
+@keyframes orb-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* el cuerpo: azul profundo, con luz arriba a la izquierda y filo encendido */
+.orb-body {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(
+    120% 120% at 32% 28%,
+    oklch(0.5 0.13 255) 0%,
+    oklch(0.36 0.12 262) 26%,
+    oklch(0.24 0.09 265) 55%,
+    oklch(0.15 0.06 268) 80%,
+    oklch(0.11 0.04 270) 100%
+  );
+  box-shadow:
+    inset -5px -7px 20px oklch(0.08 0.03 270 / 75%),
+    inset 4px 5px 16px oklch(0.85 0.12 250 / 20%),
+    0 0 22px 2px oklch(0.6 0.17 260 / 35%);
+}
+
+/*
+ * Bandas que corren horizontalmente: es lo que hace que el cuerpo parezca
+ * girar. La animación recorre exactamente un periodo del degradado (50% del
+ * ancho, que es el doble del alto), así que el bucle no tiene salto.
+ */
+.orb-skin {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -100%;
+  width: 300%;
+  background: repeating-linear-gradient(
+    92deg,
+    transparent 0px,
+    oklch(0.7 0.14 250 / 9%) 7px,
+    transparent 15px,
+    transparent 26px,
+    oklch(0.3 0.1 275 / 14%) 33px,
+    transparent 44px
+  );
+  animation: orb-roll 26s linear infinite;
+}
+
+@keyframes orb-roll {
+  to {
+    transform: translateX(-88px); /* 2 periodos de 44px: sin costura */
+  }
+}
+
+/* sombra esférica por encima de las bandas, para que no se aplane */
+.orb-body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(130% 130% at 72% 76%, oklch(0.06 0.02 270 / 68%), transparent 56%),
+    radial-gradient(55% 55% at 84% 82%, oklch(0.72 0.16 255 / 22%), transparent 60%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb-mat,
+  .orb-skin {
+    animation: none;
   }
 }

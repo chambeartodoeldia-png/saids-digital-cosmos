@@ -34,6 +34,20 @@ void main(){ gl_Position = vec4(position, 0.0, 1.0); }
  * oscurece justo los bordes — que es donde cae "SAID". El campo gana color sin
  * ganar brillo neto, y el texto blanco del hero sigue sin competencia.
  *
+ * AURORAS MÁS GRUESAS Y NUBES VISIBLES (petición explícita)
+ * Tres números, y sólo tres:
+ *   · FLARE 0.0018 -> 0.0030. Es el numerador de un campo 1/d, así que subirlo
+ *     no sólo aclara el núcleo: ensancha el radio al que la aurora sigue por
+ *     encima del umbral de visión. Por eso engorda además de brillar.
+ *   · FILAMENT 0.0022 -> 0.0030, para que los hilos de cobre acompañen y las
+ *     auroras no queden lisas al ganar cuerpo.
+ *   · HAZE de 0.050/0.060/0.118 a 0.105/0.130/0.255. Era índigo casi negro:
+ *     las nubes existían pero no se veían. Al doblarlo el campo de nubes
+ *     aparece de verdad, y en azul.
+ * INTENSITY sube 0.50 -> 0.62 para acompañar. La VIÑETA se queda en 0.50: es
+ * lo que protege las esquinas, y es donde cae "SAID". No la bajes para ganar
+ * brillo — se gana en el centro, no en el texto.
+ *
  * Los comentarios dentro del literal GLSL van en ASCII a propósito: el juego de
  * caracteres de GLSL ES 3.00 es un subconjunto de ASCII y un acento podría
  * hacer fallar la compilación en implementaciones estrictas — y si el shader no
@@ -57,11 +71,13 @@ uniform float time;
 const vec3 COOL  = vec3(0.016, 0.639, 0.665); // ~ --accent-2,  deep teal
 const vec3 AMBER = vec3(0.940, 0.630, 0.240); // ~ --accent,    signal amber
 const vec3 EMBER = vec3(0.620, 0.400, 0.300); // copper, for the filaments
-const vec3 HAZE  = vec3(0.050, 0.060, 0.118); // indigo fog, near black
+const vec3 HAZE  = vec3(0.105, 0.130, 0.255); // indigo fog: the visible clouds
 const vec3 BASE  = vec3(0.031, 0.044, 0.069); // ~ --background, #080B12
 
-const float INTENSITY = 0.50; // global dimmer, keeps white text legible
+const float INTENSITY = 0.62; // global dimmer, keeps white text legible
 const float VIGNETTE  = 0.50; // edge falloff so the canvas melts into the page
+const float FLARE     = 0.0030; // aurora core radius; see the JSDoc note
+const float FILAMENT  = 0.0030; // copper threads woven through the aurorae
 
 float rnd(vec2 p){ p=fract(p*vec2(12.9898,78.233)); p+=dot(p,p+34.56); return fract(p.x*p.y); }
 
@@ -105,10 +121,10 @@ void main(void){
     // teal -> amber ramp replaces the original rainbow cos() palette; k swings
     // with the iteration, so cool and warm flares coexist in the same frame
     float k=.5+.5*sin(i*.7-1.2);
-    col+=(.0018/d)*mix(COOL,AMBER,k);
+    col+=(FLARE/d)*mix(COOL,AMBER,k);
 
     float b=noise(i+p+bg*1.731);
-    col+=(.0022*b/length(max(p,vec2(b*p.x*.02,p.y))))*EMBER;
+    col+=(FILAMENT*b/length(max(p,vec2(b*p.x*.02,p.y))))*EMBER;
 
     col=mix(col,HAZE*bg,d);
   }

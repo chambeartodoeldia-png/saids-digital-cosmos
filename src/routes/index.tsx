@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CapabilitiesOrbital } from "@/components/site/capabilities-orbital";
 import { HeroField } from "@/components/site/hero-field";
+import { HeroOrb } from "@/components/site/hero-orb";
 import { HeroShader } from "@/components/site/hero-shader";
 import { LabCard } from "@/components/site/lab-card";
 import { ProjectRow } from "@/components/site/project-row";
@@ -76,10 +77,16 @@ const disciplines = ["AI", "CÓDIGO", "SISTEMAS", "AUTOMATIZACIÓN", "DISEÑO", 
 
 function Hero() {
   return (
-    <section className="relative flex min-h-[100svh] flex-col justify-between overflow-hidden pt-24">
+    <section
+      /* `data-no-trail`: la estela del cursor no emite ni una partícula
+         dentro de este rectángulo. Sobre la portada tapaba la composición. */
+      data-no-trail
+      className="relative flex min-h-[100svh] flex-col justify-between overflow-hidden pt-24"
+    >
       {/* campo shader al fondo, rejilla hairline encima, contenido sobre ambos */}
       <HeroShader />
       <HeroField />
+      <HeroOrb />
 
       {/* composición asimétrica: nombre a la izquierda, frase desplazada */}
       <div className="shell relative flex flex-1 flex-col justify-center">
