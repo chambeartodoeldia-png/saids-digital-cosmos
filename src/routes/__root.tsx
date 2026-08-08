@@ -93,7 +93,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Espacio personal de Said: AI, código, sistemas, automatización y diseño.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      // Sin og:image, "summary_large_image" no aplica.
+      { name: "twitter:card", content: "summary" },
       {
         name: "twitter:title",
         content: "SAID — Estoy construyendo mi propio camino",
@@ -103,8 +104,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Espacio personal de Said: AI, código, sistemas, automatización y diseño.",
       },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a037445c-7400-4b15-b46c-ec0fe580e903/id-preview-64f55990--8548caed-1836-4315-ab5f-526c82302614.lovable.app-1785638626187.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a037445c-7400-4b15-b46c-ec0fe580e903/id-preview-64f55990--8548caed-1836-4315-ab5f-526c82302614.lovable.app-1785638626187.png" },
+      // PENDIENTE: falta generar una og:image propia (1200×630).
+      // Aquí había un preview alojado por Lovable: esa URL se va a romper y
+      // delata el origen del proyecto, así que se omite a propósito hasta que
+      // exista una imagen nuestra. Al añadirla, volver twitter:card a
+      // "summary_large_image".
     ],
     links: [
       { rel: "stylesheet", href: appCss },

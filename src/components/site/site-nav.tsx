@@ -68,7 +68,15 @@ export function SiteNav() {
           pointerEvents: open ? "auto" : "none",
         }}
       >
+        {/*
+          La capa de menú ocupa la pantalla entera y era negro plano: la zona
+          más grande y más muerta del sitio. `ambient-duo` le mete las dos
+          luces opuestas (cálida arriba a la derecha, fría a la izquierda) más
+          el fondo índigo al pie. Va por debajo de la rejilla y del grano, y
+          nunca pinta sobre el texto: los enlaces siguen pasando AA.
+        */}
         <div className="absolute inset-0 bg-background" />
+        <div className="ambient-duo absolute inset-0" />
         <div className="field-grid absolute inset-0 opacity-40" />
         <div className="noise absolute inset-0 opacity-[0.035]" />
 
@@ -77,7 +85,13 @@ export function SiteNav() {
             {navItems.map((item, i) => {
               const active = pathname.startsWith(item.to);
               return (
-                <li key={item.to} className="hairline-t">
+                // la regla superior de la sección activa se tiñe de ámbar; las
+                // demás siguen siendo la hairline neutra. Solo una a la vez,
+                // así el color marca dónde estás en vez de decorar la lista.
+                <li
+                  key={item.to}
+                  className={active ? "border-t border-border-accent" : "hairline-t"}
+                >
                   <Link
                     to={item.to}
                     data-cursor="link"
@@ -122,7 +136,10 @@ export function SiteNav() {
                     data-cursor="link"
                     target={s.href.startsWith("http") ? "_blank" : undefined}
                     rel="noreferrer"
-                    className="label underline-sweep transition-colors duration-500 hover:text-foreground"
+                    // el hover va a teal, no a blanco: el subrayado ya barre de
+                    // ámbar a teal, así que el texto termina de llegar al mismo
+                    // sitio. Teal sobre --background = 9.41:1.
+                    className="label underline-sweep transition-colors duration-500 hover:text-accent-2"
                   >
                     {s.label}
                   </a>

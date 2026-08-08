@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArtifactVisual } from "./artifact-visual";
+import { BorderBeamPanel } from "@/components/ui/border-beam-panel";
 import type { Project } from "@/lib/portfolio-data";
 
 /**
@@ -8,19 +9,36 @@ import type { Project } from "@/lib/portfolio-data";
  */
 export function ProjectRow({ project, i }: { project: Project; i: number }) {
   return (
-    <li className="hairline-t group/row">
-      <Link
-        to="/work/$slug"
-        params={{ slug: project.slug }}
-        data-cursor="artifact"
-        data-cursor-label={project.placeholder ? "PRONTO" : "ABRIR"}
-        data-reveal
-        style={{ "--reveal-delay": `${i * 90}ms` } as React.CSSProperties}
-        className="block"
+    <li className="group/row mb-3">
+      {/*
+        Al pasar el puntero la fila no solo cambia de fondo: el borde pasa de
+        la hairline neutra al ámbar rebajado (--border-accent). Es lo que
+        distingue "la fila que estoy mirando" de las otras sin tener que
+        encender nada más.
+      */}
+      <BorderBeamPanel
+        seed={i + 1}
+        className="bg-background transition-colors duration-700 hover:border-border-accent hover:bg-surface"
       >
-        <div className="grid grid-cols-12 items-start gap-x-4 gap-y-5 py-7 md:py-9">
+        <Link
+          to="/work/$slug"
+          params={{ slug: project.slug }}
+          data-cursor="artifact"
+          data-cursor-label={project.placeholder ? "PRONTO" : "ABRIR"}
+          data-reveal
+          style={{ "--reveal-delay": `${i * 90}ms` } as React.CSSProperties}
+          className="block px-5 md:px-7"
+        >
+          <div className="grid grid-cols-12 items-start gap-x-4 gap-y-5 py-7 md:py-9">
+          {/*
+            La numeración era gris (el --dim de .label) y es el elemento que
+            más se repite en el índice. En reposo va en teal —el frío de la
+            zona de trabajo— y al pasar el puntero salta al ámbar de señal.
+            Contraste: teal 9.41:1 sobre --background y 8.93:1 sobre --surface
+            (el fondo del hover). Ambos muy por encima de AA.
+          */}
           <div className="col-span-2 md:col-span-1">
-            <span className="label transition-colors duration-500 group-hover/row:text-accent">
+            <span className="label text-accent-2 transition-colors duration-500 group-hover/row:text-accent">
               {project.number}
             </span>
           </div>
@@ -55,16 +73,19 @@ export function ProjectRow({ project, i }: { project: Project; i: number }) {
           </div>
 
           {/* la vista previa se abre al pasar el puntero */}
-          <div className="col-span-12 max-h-0 overflow-hidden transition-[max-height] duration-[900ms] ease-out-expo group-hover/row:max-h-[26rem] md:col-span-11 md:col-start-2">
-            <div className="mt-4 overflow-hidden border border-border bg-surface">
-              <ArtifactVisual
-                seed={project.slug}
-                className="h-48 w-full scale-[1.06] opacity-70 transition-[transform,opacity] duration-[1200ms] ease-out-expo group-hover/row:scale-100 group-hover/row:opacity-100 md:h-72"
-              />
+            <div className="col-span-12 max-h-0 overflow-hidden transition-[max-height] duration-[900ms] ease-out-expo group-hover/row:max-h-[26rem] md:col-span-11 md:col-start-2">
+              {/* el marco de la vista previa va en teal: enmarca el artefacto
+                  en el frío de la zona en vez de en otra hairline gris */}
+              <div className="mt-4 overflow-hidden border border-border-accent-2 bg-surface">
+                <ArtifactVisual
+                  seed={project.slug}
+                  className="h-48 w-full scale-[1.06] opacity-70 transition-[transform,opacity] duration-[1200ms] ease-out-expo group-hover/row:scale-100 group-hover/row:opacity-100 md:h-72"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </Link>
+        </Link>
+      </BorderBeamPanel>
     </li>
   );
 }

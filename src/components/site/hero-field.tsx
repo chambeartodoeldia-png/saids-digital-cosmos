@@ -68,11 +68,19 @@ export function HeroField() {
             "radial-gradient(38rem 38rem at var(--mx) var(--my), color-mix(in oklab, var(--accent) 9%, transparent), transparent 70%)",
         }}
       />
+      {/*
+        Suelo del hero. Era blanco puro (oklch(1 0 0 / 5%)), o sea el único
+        gris de verdad que quedaba en la composición: aclaraba el borde
+        inferior sin aportar temperatura. Ahora es teal, así que el hero queda
+        frío abajo y la luz cálida que sigue al puntero (el div de arriba,
+        --accent al 9%) destaca por contraste de temperatura y no solo de
+        brillo. Misma luminancia, ahora con color.
+      */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(70rem 40rem at 50% 120%, oklch(1 0 0 / 5%), transparent 65%)",
+            "radial-gradient(70rem 40rem at 50% 120%, var(--wash-cool), transparent 65%)",
         }}
       />
       <div className="noise absolute inset-0 opacity-[0.04]" />

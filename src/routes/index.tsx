@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { CapabilitiesOrbital } from "@/components/site/capabilities-orbital";
 import { HeroField } from "@/components/site/hero-field";
+import { HeroShader } from "@/components/site/hero-shader";
+import { PlanetGate } from "@/components/site/planet-gate";
 import { ProjectRow } from "@/components/site/project-row";
 import { SiteFooter } from "@/components/site/site-footer";
-import { capabilities, labItems, projects } from "@/lib/portfolio-data";
-import { useState } from "react";
+import { BorderBeamPanel } from "@/components/ui/border-beam-panel";
+import { labItems, projects } from "@/lib/portfolio-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,10 +36,16 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <main>
+      {/*
+        Fuera del <section> del hero a propósito: el hero tiene
+        overflow-hidden y recortaría el zoom. Al ser fixed, el planeta no
+        necesita estar dentro para verse dentro.
+      */}
+      <PlanetGate />
       <Hero />
       <Statement />
       <WorkIndex />
-      <Capabilities />
+      <CapabilitiesOrbital />
       <LabPreview />
       <ContactCall />
       <SiteFooter />
@@ -49,6 +58,8 @@ const disciplines = ["AI", "CÓDIGO", "SISTEMAS", "AUTOMATIZACIÓN", "DISEÑO", 
 function Hero() {
   return (
     <section className="relative flex min-h-[100svh] flex-col justify-between overflow-hidden pt-24">
+      {/* campo shader al fondo, rejilla hairline encima, contenido sobre ambos */}
+      <HeroShader />
       <HeroField />
 
       {/* composición asimétrica: nombre a la izquierda, frase desplazada */}
@@ -63,7 +74,7 @@ function Hero() {
               ESPACIO PERSONAL — 01
             </p>
 
-            <h1 className="mt-5 text-display font-medium leading-[0.82]">
+            <h1 className="mt-5 text-hero font-medium">
               <span className="block overflow-hidden">
                 <span
                   className="block"
@@ -103,7 +114,7 @@ function Hero() {
               <span className="text-accent">.</span>
             </p>
             <p
-              className="mt-6 max-w-[38ch] text-sm leading-relaxed text-muted-foreground"
+              className="mt-6 max-w-[38ch] text-[0.9375rem] leading-relaxed text-muted-foreground md:text-base"
               data-reveal
               style={{ "--reveal-delay": "620ms" } as React.CSSProperties}
             >
@@ -195,70 +206,6 @@ function WorkIndex() {
   );
 }
 
-function Capabilities() {
-  const [active, setActive] = useState<string | null>(
-    capabilities[0]?.key ?? null,
-  );
-
-  return (
-    <section className="shell pb-[14vh]">
-      <p className="label mb-8">04 — CÓMO TRABAJO</p>
-      <ul>
-        {capabilities.map((c) => {
-          const open = active === c.key;
-          return (
-            <li key={c.key} className="hairline-t">
-              <button
-                data-cursor="link"
-                onMouseEnter={() => setActive(c.key)}
-                onFocus={() => setActive(c.key)}
-                onClick={() => setActive(open ? null : c.key)}
-                aria-expanded={open}
-                className="group flex w-full items-baseline gap-4 py-6 text-left md:gap-10"
-              >
-                <span
-                  className="text-headline font-medium tracking-tight transition-colors duration-700"
-                  style={{ color: open ? "var(--foreground)" : "var(--dim)" }}
-                >
-                  {c.key}
-                </span>
-                <span
-                  className="ml-auto hidden max-w-[34ch] text-sm text-muted-foreground transition-opacity duration-700 md:block"
-                  style={{ opacity: open ? 1 : 0.35 }}
-                >
-                  {c.claim}
-                </span>
-                <span className="label text-accent">{open ? "—" : "+"}</span>
-              </button>
-              <div
-                className="grid overflow-hidden transition-[grid-template-rows,opacity] duration-[800ms] ease-out-expo"
-                style={{
-                  gridTemplateRows: open ? "1fr" : "0fr",
-                  opacity: open ? 1 : 0,
-                }}
-              >
-                <div className="min-h-0">
-                  <ul className="flex flex-wrap gap-x-3 gap-y-2 pb-7">
-                    {c.detail.map((d) => (
-                      <li
-                        key={d}
-                        className="label border border-border px-3 py-1.5 text-muted-foreground"
-                      >
-                        {d}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-      <div className="hairline-t" />
-    </section>
-  );
-}
-
 function LabPreview() {
   return (
     <section className="shell pb-[14vh]">
@@ -272,26 +219,29 @@ function LabPreview() {
           ENTRAR AL LAB →
         </Link>
       </div>
-      <div className="grid gap-px border border-border bg-border md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-3">
         {labItems.slice(0, 3).map((item, i) => (
-          <article
+          <BorderBeamPanel
             key={item.code}
+            seed={i + 1}
             data-cursor="link"
             data-reveal
             style={{ "--reveal-delay": `${i * 100}ms` } as React.CSSProperties}
-            className="group bg-background p-6 transition-colors duration-700 hover:bg-surface"
+            className="group bg-background transition-colors duration-700 hover:bg-surface"
           >
-            <div className="flex items-center justify-between">
-              <span className="label">{item.code}</span>
-              <span className="label text-accent">{item.status}</span>
-            </div>
-            <h3 className="mt-10 text-title font-medium tracking-tight transition-transform duration-[900ms] ease-out-expo group-hover:translate-x-1">
-              {item.title}
-            </h3>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              {item.note}
-            </p>
-          </article>
+            <article className="p-6">
+              <div className="flex items-center justify-between">
+                <span className="label">{item.code}</span>
+                <span className="label text-accent">{item.status}</span>
+              </div>
+              <h3 className="mt-10 text-title font-medium tracking-tight transition-transform duration-[900ms] ease-out-expo group-hover:translate-x-1">
+                {item.title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                {item.note}
+              </p>
+            </article>
+          </BorderBeamPanel>
         ))}
       </div>
     </section>
