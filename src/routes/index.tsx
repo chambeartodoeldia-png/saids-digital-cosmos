@@ -2,10 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { CapabilitiesOrbital } from "@/components/site/capabilities-orbital";
 import { HeroField } from "@/components/site/hero-field";
 import { HeroShader } from "@/components/site/hero-shader";
+import { LabCard } from "@/components/site/lab-card";
 import { PlanetGate } from "@/components/site/planet-gate";
 import { ProjectRow } from "@/components/site/project-row";
+import { SectionTransition } from "@/components/site/section-transition";
 import { SiteFooter } from "@/components/site/site-footer";
-import { BorderBeamPanel } from "@/components/ui/border-beam-panel";
 import { labItems, projects } from "@/lib/portfolio-data";
 
 export const Route = createFileRoute("/")({
@@ -42,12 +43,36 @@ function Index() {
         necesita estar dentro para verse dentro.
       */}
       <PlanetGate />
-      <Hero />
-      <Statement />
-      <WorkIndex />
-      <CapabilitiesOrbital />
-      <LabPreview />
-      <ContactCall />
+
+      {/*
+        El hero no se envuelve: es lo primero que se ve y no entra desde
+        ningún sitio. El salto de la zona 01 a la 02 lo hace el planeta.
+
+        De la 02 en adelante cada zona entra con una coreografía distinta,
+        para que bajar la página se sienta una secuencia de saltos y no un
+        scroll continuo. Se alternan a propósito: dos zonas seguidas con la
+        misma variante se leen como un tic.
+      */}
+      <SectionTransition variant="curtain" index={2}>
+        <Statement />
+      </SectionTransition>
+
+      <SectionTransition variant="wipe" index={3}>
+        <WorkIndex />
+      </SectionTransition>
+
+      <SectionTransition variant="aperture" index={4}>
+        <CapabilitiesOrbital />
+      </SectionTransition>
+
+      <SectionTransition variant="split" index={5}>
+        <LabPreview />
+      </SectionTransition>
+
+      <SectionTransition variant="curtain" index={6}>
+        <ContactCall />
+      </SectionTransition>
+
       <SiteFooter />
     </main>
   );
@@ -219,29 +244,15 @@ function LabPreview() {
           ENTRAR AL LAB →
         </Link>
       </div>
+      {/*
+        Estirado (el `stretch` por defecto del grid) para que las tres caras
+        midan lo mismo aunque un título ocupe dos renglones. Se puede porque
+        la pestaña que abre cada tarjeta está fuera de flujo (absolute, top:
+        100%): abrir una NO cambia su altura, así que nunca estira la fila.
+      */}
       <div className="grid gap-4 md:grid-cols-3">
         {labItems.slice(0, 3).map((item, i) => (
-          <BorderBeamPanel
-            key={item.code}
-            seed={i + 1}
-            data-cursor="link"
-            data-reveal
-            style={{ "--reveal-delay": `${i * 100}ms` } as React.CSSProperties}
-            className="group bg-background transition-colors duration-700 hover:bg-surface"
-          >
-            <article className="p-6">
-              <div className="flex items-center justify-between">
-                <span className="label">{item.code}</span>
-                <span className="label text-accent">{item.status}</span>
-              </div>
-              <h3 className="mt-10 text-title font-medium tracking-tight transition-transform duration-[900ms] ease-out-expo group-hover:translate-x-1">
-                {item.title}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                {item.note}
-              </p>
-            </article>
-          </BorderBeamPanel>
+          <LabCard key={item.code} item={item} i={i} />
         ))}
       </div>
     </section>
