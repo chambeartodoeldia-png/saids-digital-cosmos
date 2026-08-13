@@ -494,17 +494,48 @@
   }
 }
 
+
 /*
- * ── Cuerpo con anillo del hero ────────────────────────────────────────────
+ * ── Cuerpo con disco de acreción del hero ─────────────────────────────────
  *
  * Va fuera de @layer: clases propias, no compiten con ninguna utilidad, y sin
- * capa ganan sin pelear especificidad. La estructura está explicada en
- * hero-orb.tsx; aquí está la geometría y la luz.
+ * capa ganan sin pelear especificidad. La estructura y el porqué de cada
+ * pieza están en hero-orb.tsx; aquí está la geometría y la luz.
+ *
+ * Toda la figura se dimensiona a partir de --orb-size, que es el DIÁMETRO DEL
+ * CUERPO. El disco mide ~2.6 de eso y los arcos de lente ~1.9, así que la
+ * huella real en pantalla es mucho mayor que --orb-size. Al mover o
+ * redimensionar, la referencia es el disco, no el cuerpo.
  */
 .hero-orb {
-  --orb-size: clamp(104px, 12vw, 190px);
-  --orb-x: 79%;
-  --orb-y: 27%;
+  /*
+   * TAMAÑO Y POSICIÓN — medidos, no elegidos a ojo.
+   *
+   * La banda del disco es casi blanca y además gira: si cruza un texto, ese
+   * texto no pierde contraste de forma constante, lo pierde a ratos, que es
+   * peor. Así que la restricción manda sobre el gusto.
+   *
+   * Se barrió tamaño × posición contra los seis bloques de texto del hero,
+   * exigiendo cruce ~0, cuerpo entero dentro del hero y sin pisar el nav.
+   * Lo que manda NO es el ancho, es el ALTO: en una pantalla baja el
+   * contenido del hero se comprime y el texto sube hacia el orbe.
+   *   1614x910 -> caben 320px
+   *   1280x720 -> caben 200px, y ni uno más
+   * 320/910 = 35vh pero 200/720 = 28vh, así que la altura es la restricción
+   * que ata: de ahí min(20vw, 27vh). El ancho sigue puesto porque en una
+   * pantalla muy apaisada (poco alta y muy ancha) el orbe se comería la
+   * columna derecha aunque la altura diera permiso.
+   *
+   * Si tocas esto, vuelve a medir el cruce con el texto A 720 DE ALTO, no
+   * sólo en tu pantalla. No lo estimes: la primera versión parecía limpia y
+   * tapaba el 38% del titular.
+   *
+   * Si mueves o agrandas esto, vuelve a medir el cruce. No lo estimes: la
+   * primera versión parecía limpia y tapaba el 38% del titular.
+   */
+  --orb-size: clamp(150px, min(20vw, 27vh), 330px);
+  --orb-x: 90%;
+  --orb-y: 26%;
 
   position: absolute;
   left: var(--orb-x);
@@ -514,40 +545,39 @@
   margin-left: calc(var(--orb-size) / -2);
   margin-top: calc(var(--orb-size) / -2);
   pointer-events: none;
-  /* Sobre el shader y la rejilla, por debajo del contenido del hero. */
+  /* sobre el shader y la rejilla, por debajo del contenido del hero */
   z-index: 0;
 }
 
 /*
- * En móvil manda el ANILLO, no el cuerpo: mide ~2.5 veces el diámetro, así
- * que a 96px y al 77% se salía 32px por la derecha y el hero lo cortaba en
- * seco contra el borde. 84px al 68% deja el anillo entero dentro de 375px.
+ * La diagonal. Va en un envoltorio propio para que las mitades de delante y
+ * de atrás se recorten en el espacio YA inclinado: la costura sigue al plano
+ * del disco, que es como debe ser, y no a la horizontal de la pantalla.
  */
-@media (max-width: 767px) {
-  .hero-orb {
-    --orb-size: 84px;
-    --orb-x: 68%;
-    --orb-y: 18%;
-  }
+.orb-tilt {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-19deg);
 }
 
-/* resplandor general, para que el objeto tenga atmósfera y no un borde seco */
-.orb-halo {
+/* atmósfera: sin esto el disco tiene un borde seco y se lee recortado */
+.orb-glow {
   position: absolute;
-  inset: -70%;
+  inset: -85%;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    oklch(0.62 0.17 258 / 22%),
-    oklch(0.58 0.19 285 / 10%) 40%,
-    transparent 68%
+    oklch(0.6 0.19 262 / 20%),
+    oklch(0.55 0.2 285 / 9%) 38%,
+    transparent 66%
   );
 }
 
 /*
- * Envoltorio del recorte. NO lleva transform a propósito: así el clip-path
- * corta en coordenadas de pantalla y parte el anillo por su mitad visual.
- * Si el recorte fuese dentro del disco girado, cortaría en diagonal.
+ * Envoltorio del recorte. Sin transform propio a propósito: el clip-path
+ * corta en el sistema del envoltorio, que ya viene inclinado del padre.
+ * Los -100% laterales evitan cortar el disco por los lados, que es mucho
+ * más ancho que el cuerpo.
  */
 .orb-plane {
   position: absolute;
@@ -555,27 +585,28 @@
 }
 
 .orb-plane--back {
-  clip-path: inset(0 -100% 50% -100%);
+  clip-path: inset(0 -140% 50% -140%);
 }
 
 .orb-plane--front {
-  clip-path: inset(50% -100% 0 -100%);
+  clip-path: inset(50% -140% 0 -140%);
 }
 
-/* el plano del anillo: un círculo visto casi de canto */
+/* el plano del disco: un círculo visto casi de canto */
 .orb-disc {
   position: absolute;
-  inset: -52%;
-  transform: rotateX(76deg) rotate(-14deg);
+  inset: -80%;
+  transform: rotateX(80deg);
 }
 
 /*
- * El material que orbita. Gira DENTRO del plano ya inclinado, así que se lee
- * como materia dando vueltas y no como un anillo que se cae de lado.
+ * La materia. Gira DENTRO del plano ya inclinado, así que se lee como algo
+ * orbitando y no como un aro cayéndose de lado.
  *
- * El conic-gradient concentra el brillo en un tramo: eso es lo que hace que
- * se note el giro. Un anillo de brillo uniforme girando es indistinguible de
- * uno quieto.
+ * El brillo se concentra en un tramo (Doppler). El borde interior es lo más
+ * caliente — casi blanco — y se apaga hacia fuera: por eso el mask abre en
+ * 40% y no en 0, y por eso las paradas del conic van de blanco azulado a
+ * violeta apagado.
  */
 .orb-mat {
   position: absolute;
@@ -583,24 +614,25 @@
   border-radius: 50%;
   background: conic-gradient(
     from 0deg,
-    oklch(0.45 0.13 262 / 25%) 0deg,
-    oklch(0.72 0.19 258 / 85%) 55deg,
-    oklch(0.92 0.14 240) 100deg,
-    oklch(0.75 0.2 285 / 90%) 150deg,
-    oklch(0.5 0.16 280 / 40%) 215deg,
-    oklch(0.4 0.12 265 / 18%) 290deg,
-    oklch(0.45 0.13 262 / 25%) 360deg
+    oklch(0.4 0.12 268 / 30%) 0deg,
+    oklch(0.7 0.19 258 / 80%) 42deg,
+    oklch(0.97 0.07 232) 88deg,
+    oklch(0.88 0.16 246) 118deg,
+    oklch(0.7 0.21 282 / 92%) 165deg,
+    oklch(0.5 0.17 285 / 45%) 232deg,
+    oklch(0.36 0.11 270 / 20%) 300deg,
+    oklch(0.4 0.12 268 / 30%) 360deg
   );
-  /* recorta el relleno a una banda: sin esto sería un disco lleno */
   mask: radial-gradient(
     closest-side,
-    transparent 58%,
-    #000 66%,
-    #000 88%,
-    transparent 100%
+    transparent 40%,
+    #000 47%,
+    #000 62%,
+    oklch(0 0 0 / 45%) 78%,
+    transparent 96%
   );
-  filter: blur(1.5px);
-  animation: orb-orbit 13s linear infinite;
+  filter: blur(2px);
+  animation: orb-orbit 17s linear infinite;
 }
 
 @keyframes orb-orbit {
@@ -609,69 +641,119 @@
   }
 }
 
-/* el cuerpo: azul profundo, con luz arriba a la izquierda y filo encendido */
+/*
+ * ARCOS DE LENTE — la parte de atrás del disco, doblada por encima y por
+ * debajo del cuerpo. Es la firma visual de la referencia.
+ *
+ * Geometría: para que el arco asome POR ENCIMA del cuerpo, el semieje
+ * vertical de su elipse tiene que superar el radio del cuerpo. Con
+ * rotateX(58deg) el semieje vertical queda en 0.53 del horizontal, así que
+ * el anillo necesita un radio horizontal de al menos ~1.9 radios de cuerpo.
+ * De ahí el inset -90%. Bajar ese número esconde el arco dentro del cuerpo.
+ */
+.orb-lens {
+  position: absolute;
+  inset: -72%;
+}
+
+.orb-lens--top {
+  clip-path: inset(0 0 52% 0);
+}
+
+
+.orb-lens-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  /* 50deg, no 58: con 58 el arco quedaba ancho y bajo, y se leía como un
+     segundo disco en vez de como el mismo disco doblado por encima. */
+  transform: rotateX(50deg);
+  background: conic-gradient(
+    from 0deg,
+    oklch(0.45 0.13 268 / 20%) 0deg,
+    oklch(0.75 0.18 254 / 75%) 60deg,
+    oklch(0.96 0.08 234 / 95%) 100deg,
+    oklch(0.78 0.2 278 / 80%) 160deg,
+    oklch(0.5 0.16 282 / 35%) 240deg,
+    oklch(0.45 0.13 268 / 20%) 360deg
+  );
+  /* banda fina: un arco, no un segundo disco */
+  mask: radial-gradient(
+    closest-side,
+    transparent 84%,
+    #000 89%,
+    #000 95%,
+    transparent 100%
+  );
+  filter: blur(1.6px);
+  animation: orb-orbit 17s linear infinite;
+}
+
+/*
+ * El cuerpo. Casi negro a propósito: en la referencia el centro es un vacío,
+ * y es ese contraste — no el color del cuerpo — lo que hace brillar el disco.
+ * Lleva el azul de la paleta, pero apenas insinuado.
+ */
 .orb-body {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  overflow: hidden;
   background: radial-gradient(
-    120% 120% at 32% 28%,
-    oklch(0.5 0.13 255) 0%,
-    oklch(0.36 0.12 262) 26%,
-    oklch(0.24 0.09 265) 55%,
-    oklch(0.15 0.06 268) 80%,
-    oklch(0.11 0.04 270) 100%
+    circle at 50% 50%,
+    oklch(0.045 0.012 268) 0%,
+    oklch(0.05 0.016 265) 62%,
+    oklch(0.07 0.025 262) 88%,
+    oklch(0.09 0.03 260) 100%
   );
-  box-shadow:
-    inset -5px -7px 20px oklch(0.08 0.03 270 / 75%),
-    inset 4px 5px 16px oklch(0.85 0.12 250 / 20%),
-    0 0 22px 2px oklch(0.6 0.17 260 / 35%);
+  /* la sombra hacia dentro despega el cuerpo del disco que tiene detrás */
+  box-shadow: inset 0 0 30px 10px oklch(0.02 0 0 / 85%);
 }
 
-/*
- * Bandas que corren horizontalmente: es lo que hace que el cuerpo parezca
- * girar. La animación recorre exactamente un periodo del degradado (50% del
- * ancho, que es el doble del alto), así que el bucle no tiene salto.
- */
-.orb-skin {
+/* filo de luz pegado a la silueta: el disco visto de canto por su borde */
+.orb-photon {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -100%;
-  width: 300%;
-  background: repeating-linear-gradient(
-    92deg,
-    transparent 0px,
-    oklch(0.7 0.14 250 / 9%) 7px,
-    transparent 15px,
-    transparent 26px,
-    oklch(0.3 0.1 275 / 14%) 33px,
-    transparent 44px
-  );
-  animation: orb-roll 26s linear infinite;
+  inset: -3%;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 1px oklch(0.92 0.1 240 / 55%),
+    0 0 16px 1px oklch(0.75 0.17 252 / 32%);
+  animation: orb-pulse 9s ease-in-out infinite;
 }
 
-@keyframes orb-roll {
-  to {
-    transform: translateX(-88px); /* 2 periodos de 44px: sin costura */
+@keyframes orb-pulse {
+  0%,
+  100% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 1;
   }
 }
 
-/* sombra esférica por encima de las bandas, para que no se aplane */
-.orb-body::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background:
-    radial-gradient(130% 130% at 72% 76%, oklch(0.06 0.02 270 / 68%), transparent 56%),
-    radial-gradient(55% 55% at 84% 82%, oklch(0.72 0.16 255 / 22%), transparent 60%);
+/*
+ * En móvil manda el DISCO, que mide ~2.6 diámetros de cuerpo. A 150px de
+ * cuerpo el disco pasa de 390px y no cabe en 375px de pantalla, así que aquí
+ * el cuerpo baja a 108px y el conjunto se centra más para que entre entero.
+ */
+/*
+ * En móvil --orb-y va en PÍXELES, no en porcentaje. Con un 16% el centro caía
+ * a 130px en un iPhone alto pero a 107px en uno de 667, y ahí el cuerpo se
+ * metía 8px debajo del nav y tapaba la mitad de "ESPACIO PERSONAL — 01".
+ * Una distancia fija al borde superior deja la misma holgura en cualquier
+ * alto de pantalla, que es lo que hace falta aquí.
+ */
+@media (max-width: 767px) {
+  .hero-orb {
+    --orb-size: 90px;
+    --orb-x: 84%;
+    --orb-y: 124px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .orb-mat,
-  .orb-skin {
+  .orb-lens-ring,
+  .orb-photon {
     animation: none;
   }
 }
