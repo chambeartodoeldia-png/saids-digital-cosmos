@@ -86,7 +86,19 @@ export const projects: Project[] = [
     year: "2026",
     description:
       "Sistema de gestión académica y financiera de una escuela. Registra ingresos, gastos, pagos, solvencias y préstamos en tres monedas, y lee los comprobantes con OCR.",
-    technologies: ["POR CONFIRMAR"],
+    // Stack leído del package.json y del código del propio proyecto, no
+    // supuesto: TanStack Start + React + TS, Supabase para los datos, Gemini
+    // para el OCR de comprobantes, Recharts para el panel, Tailwind para la
+    // interfaz. Se listan solo las piezas que se usan de verdad en src/.
+    technologies: [
+      "TypeScript",
+      "React",
+      "TanStack Start",
+      "Supabase",
+      "Gemini",
+      "Recharts",
+      "Tailwind CSS",
+    ],
     status: "EN VIVO",
     chapters: [
       {
@@ -97,7 +109,7 @@ export const projects: Project[] = [
       {
         index: "02",
         title: "Que el registro no dependa de teclear",
-        body: "La parte que más tiempo consume no es entender las cuentas, es meterlas. Cada comprobante hay que abrirlo, leerlo y transcribirlo a mano, y ahí es donde aparecen los errores que después cuesta días encontrar. Por eso la puerta de entrada del sistema no es un formulario: se arrastran las imágenes de los comprobantes y se procesan una a una, y las filas se van agregando debajo de las anteriores.",
+        body: "La parte que más tiempo consume no es entender las cuentas, es meterlas. Cada comprobante hay que abrirlo, leerlo y transcribirlo a mano, y ahí es donde aparecen los errores que después cuesta días encontrar. Por eso la puerta de entrada del sistema no es un formulario: se arrastran las imágenes de los comprobantes, un modelo las lee y las convierte en filas, y se procesan una a una para que el orden en pantalla sea el mismo en el que se subieron.",
       },
       {
         index: "03",
@@ -358,8 +370,8 @@ export const navItems: { number: string; label: string; to: string }[] = [
  *   [ ] Qué cuentas lleva exactamente (gastos personales, facturación,
  *       inventario, caja de un negocio...). Hoy la descripción dice solo
  *       "llevar cuentas" porque es lo único confirmado.
- *   [ ] Stack real -> reemplazar technologies: ["POR CONFIRMAR"].
- *       Lenguaje, framework, base de datos, hosting, si usa modelos de AI.
+ *   [x] Stack: RESUELTO leyendo el package.json y el código del proyecto en
+ *       Documents/Proyecto-nuevaacropolis. No se inventó nada.
  *   [ ] Cuánto le falta y fecha estimada de cierre (para ajustar `status`;
  *       pasa a "EN VIVO" cuando esté publicada).
  *   [ ] ¿Habrá URL pública o demo? -> campo `link`.
