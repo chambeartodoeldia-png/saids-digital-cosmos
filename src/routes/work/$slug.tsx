@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArtifactVisual } from "@/components/site/artifact-visual";
+import { GlowButton } from "@/components/site/glow-button";
+import { ProjectShots } from "@/components/site/project-shots";
 import { SiteFooter } from "@/components/site/site-footer";
 import { projects, type Project } from "@/lib/portfolio-data";
 
@@ -86,26 +87,17 @@ function ProjectPage() {
         </dl>
       </header>
 
-      {/* visual del artefacto */}
+      {/* las capturas del proyecto, arriba del todo */}
       <section className="shell pt-4">
-        <div
-          className="overflow-hidden border border-border bg-surface"
-          data-reveal
-        >
-          {project.image ? (
-            <img
-              src={project.image}
-              alt={project.title}
-              loading="lazy"
-              className="h-[42vh] w-full object-cover md:h-[62vh]"
-            />
-          ) : (
-            <ArtifactVisual
-              seed={project.slug}
-              density={1.4}
-              className="h-[42vh] w-full md:h-[62vh]"
-            />
-          )}
+        <div className="border border-border bg-surface p-3" data-reveal>
+          <ProjectShots
+            project={project}
+            imgClassName={
+              (project.images?.length ?? 0) > 1
+                ? "h-[26vh] md:h-[38vh]"
+                : "h-[42vh] md:h-[62vh]"
+            }
+          />
         </div>
       </section>
 
@@ -211,6 +203,17 @@ function ProjectPage() {
           </div>
         </section>
       )}
+
+      {/*
+        Volver al inicio, grande y con la misma luz que el botón de WhatsApp.
+        Va ANTES de "siguiente proyecto" a propósito: al terminar de leer una
+        ficha la salida natural es volver al índice, no encadenar otra ficha.
+      */}
+      <section className="shell pb-[10vh] text-center">
+        <GlowButton to="/" size="lg" cursorLabel="INICIO">
+          ← Volver al inicio
+        </GlowButton>
+      </section>
 
       <section className="shell pb-[14vh]">
         <p className="label">SIGUIENTE</p>

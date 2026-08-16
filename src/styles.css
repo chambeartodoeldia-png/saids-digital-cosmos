@@ -944,3 +944,104 @@
     transition: none;
   }
 }
+
+/*
+ * ── Botón con luz en movimiento ───────────────────────────────────────────
+ *
+ * Mismo tratamiento que el flotante de WhatsApp, generalizado para "CONOCER
+ * MÁS" y "VOLVER AL INICIO". Las tres capas y el porqué están en
+ * whatsapp-button.tsx; lo único que cambia aquí es que no está fijado a la
+ * pantalla y que admite un tamaño grande.
+ */
+.glow-btn {
+  position: relative;
+  display: inline-flex;
+  isolation: isolate;
+  border-radius: 999px;
+  padding: 2px;
+  text-decoration: none;
+  /* mismo motivo que en .wa-fab: el aura desbordaría y metería scroll */
+  overflow: hidden;
+  transition: transform 420ms var(--ease-out-expo);
+}
+
+.glow-btn:hover {
+  transform: translateY(-2px);
+}
+
+.glow-btn-aura {
+  position: absolute;
+  inset: -35%;
+  z-index: -2;
+  border-radius: 999px;
+  background: conic-gradient(
+    from 0deg,
+    oklch(0.74 0.175 258),
+    oklch(0.68 0.21 292),
+    oklch(0.8 0.14 200),
+    oklch(0.78 0.168 61),
+    oklch(0.74 0.175 258)
+  );
+  filter: blur(9px);
+  opacity: 0.85;
+  animation: wa-spin 9s linear infinite;
+}
+
+.glow-btn-sheen {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: 999px;
+}
+
+.glow-btn-sheen::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  bottom: -50%;
+  width: 45%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    oklch(0.98 0.02 240 / 42%),
+    transparent
+  );
+  animation: wa-sweep 4.6s ease-in-out infinite;
+}
+
+.glow-btn-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border-radius: 999px;
+  background: oklch(0.19 0.022 262);
+  padding: 0.6rem 1.15rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--foreground);
+  box-shadow:
+    0 8px 26px oklch(0.05 0.02 265 / 45%),
+    0 0 22px oklch(0.7 0.17 262 / 26%);
+}
+
+/* el de volver al inicio: tiene que leerse de lejos */
+.glow-btn-lg {
+  gap: 0.8rem;
+  padding: 1.05rem 2.2rem;
+  font-size: 0.9375rem;
+  letter-spacing: 0.16em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-btn-aura,
+  .glow-btn-sheen::before {
+    animation: none;
+  }
+
+  .glow-btn {
+    transition: none;
+  }
+}

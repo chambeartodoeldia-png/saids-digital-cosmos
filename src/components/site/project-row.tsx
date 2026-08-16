@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { ArtifactVisual } from "./artifact-visual";
+import { GlowButton } from "./glow-button";
+import { ProjectShots } from "./project-shots";
 import { BorderBeamPanel } from "@/components/ui/border-beam-panel";
 import type { Project } from "@/lib/portfolio-data";
 
@@ -72,15 +73,30 @@ export function ProjectRow({ project, i }: { project: Project; i: number }) {
             </span>
           </div>
 
-          {/* la vista previa se abre al pasar el puntero */}
-            <div className="col-span-12 max-h-0 overflow-hidden transition-[max-height] duration-[900ms] ease-out-expo group-hover/row:max-h-[26rem] md:col-span-11 md:col-start-2">
+          {/*
+            La vista previa se abre al pasar el puntero: capturas reales del
+            proyecto + el botón de entrar. El max-h sube a 34rem porque ahora
+            además de la imagen hay una fila de botón debajo.
+          */}
+            <div className="col-span-12 max-h-0 overflow-hidden transition-[max-height] duration-[900ms] ease-out-expo group-hover/row:max-h-[34rem] md:col-span-11 md:col-start-2">
               {/* el marco de la vista previa va en teal: enmarca el artefacto
                   en el frío de la zona en vez de en otra hairline gris */}
-              <div className="mt-4 overflow-hidden border border-border-accent-2 bg-surface">
-                <ArtifactVisual
-                  seed={project.slug}
-                  className="h-48 w-full scale-[1.06] opacity-70 transition-[transform,opacity] duration-[1200ms] ease-out-expo group-hover/row:scale-100 group-hover/row:opacity-100 md:h-72"
+              <div className="mt-4 border border-border-accent-2 bg-surface p-3">
+                <ProjectShots
+                  project={project}
+                  imgClassName="h-40 md:h-60"
+                  className="opacity-80 transition-opacity duration-[1200ms] ease-out-expo group-hover/row:opacity-100"
                 />
+              </div>
+
+              {/*
+                GlowButton sin `to` ni `href` a propósito: esta fila entera ya
+                es un <Link>, y un <a> dentro de otro <a> es HTML inválido —
+                el navegador parte el árbol y el enlace exterior deja de
+                funcionar. Como <span> se ve idéntico y hereda el clic.
+              */}
+              <div className="mt-4 pb-1">
+                <GlowButton>Conocer más →</GlowButton>
               </div>
             </div>
           </div>

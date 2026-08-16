@@ -48,6 +48,12 @@ export type Project = {
   link?: string;
   /** imagen real cuando exista; si no, se genera un visual */
   image?: string;
+  /**
+   * Capturas del proyecto. Se enseñan en la vista previa que se abre al pasar
+   * el puntero en el índice, y arriba del todo en la ficha. Cuando hay dos,
+   * van una al lado de la otra separadas por un hueco. Manda sobre `image`.
+   */
+  images?: string[];
   chapters?: ProjectChapter[];
 };
 
@@ -100,6 +106,7 @@ export const projects: Project[] = [
       "Tailwind CSS",
     ],
     status: "EN VIVO",
+    images: ["/img/sisfia-ocr.png", "/img/sisfia-panel.png"],
     chapters: [
       {
         index: "01",
@@ -147,6 +154,7 @@ export const projects: Project[] = [
       "Dos flujos en n8n que hacen trabajo que antes hacía una persona: uno analiza las métricas de las campañas y manda el veredicto; el otro reparte los mensajes que llegan al área equivocada.",
     technologies: ["n8n", "Gemini", "API de Facebook", "Gmail", "Google Sheets"],
     status: "EN VIVO",
+    images: ["/img/flujo-metricas.png", "/img/flujo-tickets.png"],
     chapters: [
       {
         index: "01",
@@ -207,12 +215,19 @@ export const projects: Project[] = [
     // la marca a la vista y pidió expresamente meterla en el sitio.
     title: "Intelec",
     placeholder: false,
-    categories: ["WEB", "DESIGN"],
+    categories: ["PÁGINA WEB", "DESIGN"],
     year: "2026",
     description:
       "Landing de un solo producto: un electrodo de grafito para puesta a tierra. Precio a la vista, sin formulario, una sola acción.",
     technologies: ["HTML", "CSS", "JavaScript", "Vercel"],
     status: "EN VIVO",
+    /*
+     * FALTA la captura de la portada renderizada. Aquí va la fotografía real
+     * del hero, sacada de los assets del propio proyecto, que es lo mejor que
+     * hay hoy en el repo. En cuanto exista `public/img/intelec-web.png` con
+     * la pantalla completa, se cambia esta línea por:
+     *   images: ["/img/intelec-web.png"],
+     */
     image: "/img/intelec.webp",
     chapters: [
       {
