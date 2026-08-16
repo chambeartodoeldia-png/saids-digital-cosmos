@@ -117,8 +117,16 @@ function ProjectPage() {
               className="hairline-t grid grid-cols-12 gap-y-6 py-[8vh]"
             >
               <div className="col-span-12 md:col-span-4">
+                {/*
+                  `label` manda sobre los cinco actos fijos. Sin esto, un
+                  proyecto como "Automatizaciones" —donde cada capítulo es un
+                  flujo distinto, no un acto de la misma historia— saldría
+                  etiquetado "01 — EL PROBLEMA / 02 — LA IDEA", que es mentira.
+                */}
                 <p className="label sticky top-24">
-                  {chapterTitles[i] ?? `${ch.index} — ${ch.title.toUpperCase()}`}
+                  {ch.label ??
+                    chapterTitles[i] ??
+                    `${ch.index} — ${ch.title.toUpperCase()}`}
                 </p>
               </div>
               <div className="col-span-12 md:col-span-7 md:col-start-6">
@@ -148,6 +156,17 @@ function ProjectPage() {
                       </li>
                     ))}
                   </ul>
+                )}
+
+                {ch.image && (
+                  <figure className="mt-8" data-reveal>
+                    <img
+                      src={ch.image}
+                      alt={ch.imageAlt ?? ch.title}
+                      loading="lazy"
+                      className="w-full border border-border bg-surface"
+                    />
+                  </figure>
                 )}
 
                 {ch.fragment && (

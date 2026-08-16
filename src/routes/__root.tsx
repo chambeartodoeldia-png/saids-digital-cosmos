@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Cursor } from "@/components/site/cursor";
 import { RevealEngine } from "@/components/site/reveal-engine";
 import { SiteNav } from "@/components/site/site-nav";
+import { WhatsappButton } from "@/components/site/whatsapp-button";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -153,7 +154,12 @@ function RootComponent() {
       <RevealEngine />
       <Cursor />
       <SiteNav />
-      <Toaster position="bottom-right" />
+      <WhatsappButton />
+      {/*
+        El toaster se mueve a arriba-derecha: el botón de WhatsApp ocupa la
+        esquina de abajo a la derecha y los dos se solapaban.
+      */}
+      <Toaster position="top-right" />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>

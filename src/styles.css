@@ -134,10 +134,22 @@
    * un gris más claro. La luminancia (L) se mantiene casi idéntica a la
    * original, así que el sitio no se aclara: solo gana temperatura.
    */
-  --background: oklch(0.15 0.015 262);
-  --surface: oklch(0.184 0.017 258);
-  --surface-2: oklch(0.215 0.019 252);
-  --surface-3: oklch(0.255 0.021 246);
+  /*
+   * ACLARADO (petición: "que no sea tan oscuro, un poquito más claro").
+   * Todo el escalón sube ~0.04 de luminancia manteniendo los mismos saltos
+   * entre niveles, para que la jerarquía de elevación no se aplaste:
+   *   fondo      0.150 -> 0.192
+   *   superficie 0.184 -> 0.228
+   *   nivel 2    0.215 -> 0.262
+   *   nivel 3    0.255 -> 0.300
+   * Aclarar el fondo le quita contraste a TODO el texto, así que --dim se
+   * recalculó junto con esto (ver el bloque de texto de abajo). Los ratios
+   * se midieron después del cambio, no se estimaron.
+   */
+  --background: oklch(0.192 0.016 262);
+  --surface: oklch(0.228 0.018 258);
+  --surface-2: oklch(0.262 0.02 252);
+  --surface-3: oklch(0.3 0.022 246);
 
   /*
    * TEXTO — la misma familia fría, con contraste verificado sobre --background.
@@ -147,10 +159,11 @@
    * paso mete color en las etiquetas, que son el elemento más repetido.
    */
   --foreground: oklch(0.965 0.003 250);
-  --muted-foreground: oklch(0.71 0.02 240);
-  --dim: oklch(0.605 0.028 233);
+  --muted-foreground: oklch(0.745 0.02 240);
+  /* sube con el fondo: a 0.605 sobre el fondo aclarado caía por debajo de AA */
+  --dim: oklch(0.655 0.03 233);
   --primary: oklch(0.965 0.003 250);
-  --primary-foreground: oklch(0.15 0.015 262);
+  --primary-foreground: oklch(0.192 0.016 262);
 
   /*
    * ACENTOS — jerarquía estricta, no un arcoíris.
@@ -755,5 +768,179 @@
   .orb-lens-ring,
   .orb-photon {
     animation: none;
+  }
+}
+
+/*
+ * ── Botón flotante de WhatsApp ────────────────────────────────────────────
+ *
+ * Sin verde. El razonamiento está en whatsapp-button.tsx; aquí está la luz.
+ *
+ * Tres capas: el aura que gira por debajo, el brillo que barre, y el cuerpo
+ * opaco encima. El cuerpo TIENE que ser opaco: es lo que garantiza que el
+ * texto se lea igual en el fotograma más claro de la animación y en el más
+ * oscuro. Si el degradado se viera a través del texto, el contraste cambiaría
+ * con el tiempo y habría medio segundo de cada ciclo en el que no se lee.
+ */
+.wa-fab {
+  position: fixed;
+  right: clamp(1rem, 2.5vw, 2rem);
+  bottom: clamp(1rem, 2.5vw, 2rem);
+  z-index: 90;
+  display: inline-flex;
+  isolation: isolate;
+  border-radius: 999px;
+  padding: 2px; /* deja ver el aura como filo de luz */
+  text-decoration: none;
+  transition: transform 420ms var(--ease-out-expo);
+  /*
+   * RECORTE OBLIGATORIO. El aura va a inset -35% y encima lleva blur, así que
+   * se sale del botón por los cuatro lados. Por la derecha eso se comía el
+   * margen contra el borde de la ventana y metía 327px de scroll horizontal
+   * en TODAS las páginas del sitio. Con overflow oculto el aura sigue viéndose
+   * como filo giratorio (el cuerpo interior es opaco y sólo deja ver 2px), y
+   * el halo exterior lo pone el box-shadow de .wa-fab-inner, que no cuenta
+   * para el tamaño desplazable de la página.
+   */
+  overflow: hidden;
+}
+
+.wa-fab:hover {
+  transform: translateY(-2px);
+}
+
+/*
+ * El aura. Gira entera, así que el filo de color del borde va cambiando de
+ * posición: es el movimiento que sustituye a la llamada de atención del
+ * verde. 9s es deliberadamente lento — a más velocidad se lee como un aviso
+ * de error y distrae del contenido.
+ */
+.wa-fab-aura {
+  position: absolute;
+  inset: -35%;
+  z-index: -2;
+  border-radius: 999px;
+  background: conic-gradient(
+    from 0deg,
+    oklch(0.74 0.175 258),
+    oklch(0.68 0.21 292),
+    oklch(0.8 0.14 200),
+    oklch(0.78 0.168 61),
+    oklch(0.74 0.175 258)
+  );
+  filter: blur(9px);
+  opacity: 0.85;
+  animation: wa-spin 9s linear infinite;
+}
+
+@keyframes wa-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* brillo que barre el botón cada pocos segundos */
+.wa-fab-sheen {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: 999px;
+}
+
+.wa-fab-sheen::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  bottom: -50%;
+  width: 45%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    oklch(0.98 0.02 240 / 42%),
+    transparent
+  );
+  animation: wa-sweep 4.6s ease-in-out infinite;
+}
+
+@keyframes wa-sweep {
+  0%,
+  55% {
+    transform: translateX(-160%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(360%) skewX(-18deg);
+  }
+}
+
+/* el cuerpo: opaco, para que el texto no dependa de la animación */
+.wa-fab-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  border-radius: 999px;
+  background: oklch(0.19 0.022 262);
+  padding: 0.68rem 1.15rem 0.68rem 0.95rem;
+  /* sombra de apoyo + halo de color: box-shadow no genera scroll */
+  box-shadow:
+    0 10px 34px oklch(0.05 0.02 265 / 55%),
+    0 0 26px oklch(0.7 0.17 262 / 30%);
+}
+
+.wa-fab-glyph {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex: none;
+  color: oklch(0.92 0.11 235);
+}
+
+.wa-fab-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.wa-fab-line {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+}
+
+.wa-fab-num {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  color: oklch(0.82 0.09 238);
+}
+
+/*
+ * En móvil se queda solo el glifo. El texto completo ocuparía casi el ancho
+ * de la pantalla y taparía contenido; el glifo por sí solo ya identifica a
+ * WhatsApp, que es justo por lo que se conservó exacto.
+ */
+@media (max-width: 560px) {
+  .wa-fab-text {
+    display: none;
+  }
+
+  .wa-fab-inner {
+    padding: 0.85rem;
+  }
+
+  .wa-fab-glyph {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wa-fab-aura,
+  .wa-fab-sheen::before {
+    animation: none;
+  }
+
+  .wa-fab {
+    transition: none;
   }
 }
