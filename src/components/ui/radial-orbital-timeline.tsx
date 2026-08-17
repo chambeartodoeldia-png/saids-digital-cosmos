@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { useVisible } from "@/lib/use-visible";
 import { cn } from "@/lib/utils";
 
 /**
@@ -91,9 +92,19 @@ export function RadialOrbitalTimeline({
   /** Corta la deriva en el mismo instante del clic, no un frame después. */
   const pausedRef = React.useRef(false);
 
-  // La órbita se detiene mientras hay un nodo abierto: leer un texto que se
-  // mueve es hostil, y el nodo activo tiene que quedarse quieto arriba.
-  const spinning = activeId === null && !reduced;
+  /*
+   * La órbita gira sólo cuando de verdad hay alguien mirándola. Tres frenos:
+   *
+   *  · `activeId === null` — con un nodo abierto se para: leer un texto que se
+   *    mueve es hostil, y el nodo activo tiene que quedarse quieto arriba.
+   *  · `!reduced` — respeta la preferencia de menos movimiento.
+   *  · `onStage` — NUEVO. Antes el bucle giraba con la sección a tres
+   *    pantallas de distancia y con la pestaña en segundo plano. Es la única
+   *    zona del sitio con un rAF permanente que no se apagaba nunca, y en
+   *    móvil eso es batería y calor a cambio de nada.
+   */
+  const onStage = useVisible(stageRef);
+  const spinning = activeId === null && !reduced && onStage;
 
   React.useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");

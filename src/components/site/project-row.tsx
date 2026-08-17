@@ -95,7 +95,14 @@ export function ProjectRow({ project, i }: { project: Project; i: number }) {
                 el navegador parte el árbol y el enlace exterior deja de
                 funcionar. Como <span> se ve idéntico y hereda el clic.
               */}
-              <div className="mt-4 pb-1">
+              {/*
+                `glow-idle`: la luz de este botón está PARADA mientras la fila
+                está cerrada, y arranca al abrirla. Sin esto, las cuatro filas
+                del índice tenían cada una un degradado cónico girando con
+                blur(9px) dentro de un contenedor de altura cero — cuatro
+                animaciones permanentes que nadie llegaba a ver nunca.
+              */}
+              <div className="glow-idle mt-4 pb-1">
                 <GlowButton>Conocer más →</GlowButton>
               </div>
             </div>

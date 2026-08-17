@@ -41,26 +41,35 @@ function Index() {
 
       {/*
         El hero no se envuelve: es lo primero que se ve, no entra desde
-        ningún sitio y su fondo (shader + rejilla) es a pantalla completa.
+        ningún sitio y su fondo (shader + orbe) es a pantalla completa.
 
-        De la 02 en adelante cada zona entra con una coreografía distinta,
-        para que bajar la página se sienta una secuencia de saltos y no un
-        scroll continuo. Se alternan a propósito: dos zonas seguidas con la
-        misma variante se leen como un tic.
+        UNA SOLA COREOGRAFÍA para las cinco zonas, y antes eran cinco
+        distintas (curtain, wipe, aperture, split, curtain). Cinco maneras
+        diferentes de entrar no se leen como riqueza, se leen como un muestrario
+        de efectos: el visitante deja de mirar el contenido y empieza a mirar
+        las transiciones. Repetir una sola las convierte en gramática — "así
+        entra una zona en este sitio" — y deja el protagonismo al orbe.
+
+        Se eligió `curtain` porque es la que mejor cuenta la idea de destapar,
+        y de paso se va `aperture`, que era la única con filter: blur() sobre
+        una sección entera: el efecto más caro del sitio en móvil.
+
+        `index` sigue alternando el eje para que dos zonas seguidas no queden
+        exactamente idénticas.
       */}
       <SectionTransition variant="curtain" index={2}>
         <Statement />
       </SectionTransition>
 
-      <SectionTransition variant="wipe" index={3}>
+      <SectionTransition variant="curtain" index={3}>
         <WorkIndex />
       </SectionTransition>
 
-      <SectionTransition variant="aperture" index={4}>
+      <SectionTransition variant="curtain" index={4}>
         <CapabilitiesOrbital />
       </SectionTransition>
 
-      <SectionTransition variant="split" index={5}>
+      <SectionTransition variant="curtain" index={5}>
         <LabPreview />
       </SectionTransition>
 

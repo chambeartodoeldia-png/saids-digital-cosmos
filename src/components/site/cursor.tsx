@@ -27,11 +27,37 @@ export function Cursor() {
   const [label, setLabel] = useState<string | null>(null);
 
   useEffect(() => {
-    const fine = window.matchMedia("(pointer: fine)").matches;
-    if (!fine) return;
-    setEnabled(true);
-    document.body.classList.add("said-cursor");
-    return () => document.body.classList.remove("said-cursor");
+    /*
+     * Dos condiciones, y las dos se vigilan EN VIVO.
+     *
+     * · pointer: fine — sin puntero fino no hay nada que sustituir. Se
+     *   re-evalúa porque un portátil con pantalla táctil, un tablet con
+     *   teclado o simplemente conectar un ratón cambian la respuesta a mitad
+     *   de sesión. Antes se leía una sola vez al montar y se quedaba fijada.
+     *
+     * · prefers-reduced-motion — si el usuario la activa, se le devuelve su
+     *   cursor. No es una preferencia estética: quien activa esa opción a
+     *   menudo depende del puntero del sistema (ampliado, de alto contraste,
+     *   con estela) y este componente lo esconde para poner un punto de 7px.
+     */
+    const fine = window.matchMedia("(pointer: fine)");
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const sync = () => {
+      const on = fine.matches && !calm.matches;
+      setEnabled(on);
+      document.body.classList.toggle("said-cursor", on);
+    };
+
+    sync();
+    fine.addEventListener?.("change", sync);
+    calm.addEventListener?.("change", sync);
+
+    return () => {
+      fine.removeEventListener?.("change", sync);
+      calm.removeEventListener?.("change", sync);
+      document.body.classList.remove("said-cursor");
+    };
   }, []);
 
   useEffect(() => {
