@@ -11,8 +11,8 @@ export type ProjectChapter = {
   /**
    * Etiqueta del raíl izquierdo. Sin esto, la ficha usa los cinco actos fijos
    * (EL PROBLEMA, LA IDEA, EL SISTEMA...). Se pone cuando un proyecto no
-   * sigue esa estructura — por ejemplo "Automatizaciones", donde cada
-   * capítulo es un flujo distinto y no un acto de la misma historia.
+   * sigue esa estructura — como los dos flujos, donde los capítulos son
+   * CUÁNDO CORRE / EL FLUJO / RIESGO / CRITERIO y no actos de un relato.
    */
   label?: string;
   /** líneas técnicas destacadas */
@@ -61,22 +61,21 @@ export type Project = {
  * Proyectos reales de Said. Nada aquí presenta trabajo inexistente como real.
  *
  * Criterio de este bloque:
- * - Los cuatro existen de verdad. `placeholder: false` en todos.
- * - Los `chapters` de los tres documentados salen de material real: los dos
- *   flujos de n8n se describieron a partir de la captura del lienzo, nodo por
- *   nodo, y la landing a partir de la captura de su portada. No hay ni un
- *   paso, ni una integración, ni un dato que no se vea en ese material.
+ * - Los cuatro existen de verdad y están terminados. `placeholder: false` en
+ *   todos, y los cuatro con capítulos escritos.
+ * - Lo que se cuenta sale de material real: los dos flujos de n8n se
+ *   describieron a partir de la captura de su lienzo, nodo por nodo; el
+ *   sistema, de sus pantallas y de su package.json; la landing, de su portada
+ *   renderizada. No hay ni un paso, ni una integración, ni un dato que no se
+ *   vea en ese material o que Said no haya confirmado.
  * - NO HAY MÉTRICAS EN NINGUNO. Ni tiempo ahorrado, ni correos procesados, ni
  *   conversión. Nada de eso está medido, así que nada de eso se escribe. Si
  *   algún día hay una cifra real, va con su fuente o no va.
- * - AIA system sigue sin `chapters` a propósito: está sin terminar y Said
- *   pidió expresamente dejarlo para el final. Su ficha muestra el bloque
- *   "SIN PUBLICAR", que es la verdad.
- * - Sin `image` en ninguno: las capturas existen pero viven en el chat, no en
- *   el repo. En cuanto los archivos estén en `public/`, se rellena el campo y
- *   sustituyen al visual generativo.
+ * - Lo que SÍ está confirmado por Said va escrito como tal: cuándo se ejecuta
+ *   cada flujo, sobre qué bandeja corre el reparto y qué stack lleva el
+ *   sistema.
  *
- * Al final del archivo está el checklist de lo que falta.
+ * Al final del archivo está el checklist de lo que queda.
  */
 export const projects: Project[] = [
   {
@@ -150,7 +149,7 @@ export const projects: Project[] = [
       {
         index: "05",
         title: "En uso, con datos reales",
-        body: "No es una demo: está funcionando con la contabilidad real de la escuela, con cientos de movimientos registrados. Por eso mismo aquí no hay capturas. Las pantallas que existen enseñan cifras reales de una institución y el nombre de la cuenta de quien la usa, y eso no se publica en un portfolio por muy bien que se vea.",
+        body: "No es una demo: está funcionando con la contabilidad real de la escuela, con cientos de movimientos registrados. Las capturas de arriba son de esa instalación, no de un entorno de prueba — con sus cifras y sus movimientos reales.",
       },
     ],
   },
@@ -163,14 +162,20 @@ export const projects: Project[] = [
     categories: ["AUTOMATION", "AI"],
     year: "2026",
     description:
-      "Hace el trabajo de quien revisa el rendimiento de los anuncios: descarga las métricas, las compara con los periodos anteriores y manda un informe con el veredicto.",
+      "El informe de la semana llega solo los lunes a las 8:00, y se puede lanzar a mano cuando haga falta. Descarga las métricas, las compara con los periodos anteriores y manda el veredicto.",
     technologies: ["n8n", "Gemini", "API de Facebook", "Gmail", "Google Sheets"],
     status: "EN VIVO",
     images: ["/img/flujo-metricas.png"],
     chapters: [
       {
         index: "01",
-        label: "01 — EL FLUJO",
+        label: "01 — CUÁNDO CORRE",
+        title: "Los lunes a las 8:00, o cuando haga falta",
+        body: "Tiene dos maneras de arrancar y las dos importan. Sola, cada lunes a las 8:00 de la mañana: el informe de la semana ya está en el correo antes de que nadie se acuerde de pedirlo, que es la única forma de que un análisis periódico se haga de verdad. Y a mano, cuando hay que mirar algo a mitad de semana — si se acaba de cambiar una campaña, no hace falta esperar al lunes.",
+      },
+      {
+        index: "02",
+        label: "02 — EL FLUJO",
         title: "El flujo que analiza las campañas",
         body: "Hace el trabajo de quien revisa el rendimiento de los anuncios: descarga las métricas, las calcula, las compara con los periodos anteriores y dice si va mejor, igual o peor. El dato de hoy solo no significa nada — el trabajo real es tener contra qué compararlo, y eso hecho a mano se termina dejando de hacer justo las semanas en las que más falta hace.",
         points: [
@@ -186,8 +191,8 @@ export const projects: Project[] = [
           "Lienzo de n8n del flujo de métricas: renovación de token, descarga de datos, cálculo, análisis con modelo y envío del informe.",
       },
       {
-        index: "02",
-        label: "02 — RIESGO",
+        index: "03",
+        label: "03 — RIESGO",
         title: "Casi la mitad de ese flujo es para cuando algo falla",
         body: "Es la parte que no luce en una demo y la que decide si el sistema sirve de verdad. Cada punto donde el flujo depende de algo ajeno — que la API del otro responda, que existan datos, que el modelo devuelva algo con sentido — tiene su propia salida de aviso. La regla es que ningún fallo se quede callado: un flujo que falla en silencio es peor que uno que no existe, porque te deja creyendo que estás cubierto.",
         points: [
@@ -198,8 +203,8 @@ export const projects: Project[] = [
         ],
       },
       {
-        index: "03",
-        label: "03 — CRITERIO",
+        index: "04",
+        label: "04 — CRITERIO",
         title: "Cuando no está seguro, no adivina",
         body: "La regla que hace este flujo utilizable delante de un cliente: nunca actúa directamente sobre lo que devuelve el modelo. Primero comprueba que esa salida es válida, y solo entonces mueve algo. Si no lo es, avisa del fallo en vez de mandar un informe con un veredicto inventado. Un análisis que siempre concluye algo, aunque no tenga ni idea, es exactamente lo que no quieres decidiendo dónde pones tu presupuesto.",
       },
@@ -213,7 +218,7 @@ export const projects: Project[] = [
     categories: ["AUTOMATION", "AI"],
     year: "2026",
     description:
-      "Mucha gente escribe al área equivocada. Este flujo lee lo que entra, decide de qué va y lo pone delante del equipo que toca, con el trabajo ya empezado.",
+      "Corre con cada mensaje que entra. Es la bandeja donde escribe todo el mundo: el flujo lee lo que llega, decide si es para el área que atiende ahí o si va para otra, y lo deja donde toca con el trabajo empezado.",
     technologies: ["n8n", "Gmail", "Gemini", "Google Sheets"],
     status: "EN VIVO",
     images: ["/img/flujo-tickets.png"],
@@ -221,34 +226,39 @@ export const projects: Project[] = [
       {
         index: "01",
         label: "01 — EL PROBLEMA",
-        title: "Todo cae en la misma bandeja",
-        body: "A una bandeja de entrada le llega de todo mezclado: un fallo del producto, una duda de cobros y una pregunta general caen exactamente en el mismo sitio, y muchas veces las manda alguien que se equivocó de área. Alguien tiene que abrirlos uno por uno, entender de qué van y reenviarlos. Es un trabajo que casi nunca requiere criterio, pero hay que hacerlo siempre y a tiempo.",
+        title: "La bandeja donde escribe todo el mundo",
+        body: "Es la dirección a la que llega todo, y por eso llega de todo: un fallo del producto, una duda de cobros y una pregunta general caen exactamente en el mismo sitio. La mayoría ni siquiera son para quien atiende esa bandeja — la gente escribe a la primera dirección que encuentra y se equivoca de área constantemente. Alguien tiene que abrir cada mensaje, entender de qué va y reenviarlo. Es un trabajo que casi nunca requiere criterio, pero hay que hacerlo con todos y a tiempo.",
       },
       {
         index: "02",
-        label: "02 — EL FLUJO",
+        label: "02 — CUÁNDO CORRE",
+        title: "Con cada mensaje, sin esperar a nada",
+        body: "No hay horario ni tanda: el flujo arranca en el momento en que entra un mensaje. Es la diferencia entre una bandeja repartida y una bandeja que alguien revisa cuando puede — que en la práctica significa que lo urgente y lo que no van a esperar exactamente lo mismo.",
+      },
+      {
+        index: "03",
+        label: "03 — EL FLUJO",
         title: "Clasificar, comprobar, repartir",
         body: "Gmail dispara el flujo con cada correo nuevo. Se extraen los datos, el modelo clasifica y —este es el paso que importa— hay una comprobación explícita antes de mover nada. El sistema nunca actúa directamente sobre la salida del modelo: primero verifica que es válida, y sólo entonces reparte.",
         points: [
-          "Entra un correo y arranca el flujo; se extraen sus datos",
+          "Entra un mensaje y arranca el flujo; se extraen sus datos",
           "Un modelo lo clasifica con salida estructurada, para que responda en un formato fijo y no en prosa",
-          "Fallo del producto → aviso al equipo técnico",
-          "Cobros → aviso al equipo de facturación",
-          "Pregunta general → borrador de respuesta redactado, sin enviar: eso lo decide una persona",
+          "Si NO es para esta bandeja, se pasa al área que corresponde: fallo del producto al equipo técnico, cobros a facturación",
+          "Si SÍ es para esta bandeja, se prepara la respuesta: queda un borrador redactado, listo para que una persona lo revise y lo envíe",
         ],
         image: "/img/flujo-tickets.png",
         imageAlt:
           "Lienzo de n8n: disparador de Gmail, clasificación con modelo, verificación y reparto por categoría a tres áreas.",
       },
       {
-        index: "03",
-        label: "03 — CRITERIO",
+        index: "04",
+        label: "04 — CRITERIO",
         title: "Cuando no está seguro, no adivina",
         body: "Si la clasificación no pasa la comprobación, el correo se marca para revisión manual y se avisa del fallo. Esa rama no es el plan B ni un parche: es parte del diseño. Un clasificador que siempre decide algo, aunque no tenga ni idea, es exactamente lo que no quieres automatizando la bandeja por la que te escriben los clientes.",
       },
       {
-        index: "04",
-        label: "04 — EL CIERRE",
+        index: "05",
+        label: "05 — EL CIERRE",
         title: "Registrado y marcado",
         body: "Los dos caminos terminan igual: el ticket queda registrado en una hoja y el correo se etiqueta como procesado. La etiqueta no es decorativa — es lo que impide que el mismo correo se vuelva a procesar y que a alguien le lleguen dos avisos del mismo asunto.",
       },
@@ -439,10 +449,17 @@ export const navItems: { number: string; label: string; to: string }[] = [
  * --------------------------------------------------------------------------
  *   Los capítulos salen de la captura del lienzo de n8n, nodo por nodo. Lo
  *   que se ve está descrito; lo que no se ve, no se ha inventado.
- *   [ ] ¿Cada cuánto se ejecuta el analizador? En la captura el disparador es
- *       manual, así que o hay un Schedule fuera de plano o se lanza a mano.
- *       Sin confirmar, NINGÚN capítulo dice "cada semana" ni frecuencia.
+ *   [x] Cuándo se ejecutan: CONFIRMADO por Said.
+ *       · Analizador: solo, los lunes a las 8:00, y a mano cuando haga falta.
+ *         (En la captura solo se ve el disparador manual; el Schedule queda
+ *         fuera de plano, pero está confirmado y por eso se publica.)
+ *       · Reparto: con cada mensaje que entra, sin horario ni tanda.
  *   [ ] ¿Para quién corren? ¿Cuenta y bandeja propias o de un cliente?
+ *   [ ] PRECISAR: Said dijo que el reparto "directamente le contesta a las
+ *       personas". En el lienzo el nodo es "Crear borrador de respuesta ->
+ *       crear: borrador", que NO envía. Se publicó lo que se ve (deja el
+ *       borrador listo para que una persona lo mande). Si de verdad envía
+ *       solo, hay que cambiar ese punto del capítulo 03.
  *   [ ] Sin métricas: ni tiempo ahorrado ni correos procesados. Si algún día
  *       hay una cifra medida, va con su fuente o no va.
  *
