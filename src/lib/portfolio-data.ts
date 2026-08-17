@@ -80,12 +80,24 @@ export type Project = {
  */
 export const projects: Project[] = [
   {
-    slug: "sisfia",
+    slug: "control-de-finanzas",
     number: "01",
-    // Se publica el nombre del sistema, NO el de la institución. El colegio
-    // aparece en las capturas, pero nombrarlo aquí no aporta nada al portfolio
-    // y expone a un cliente que no ha dado permiso.
-    title: "SISFIA",
+    /*
+     * NOMBRES: cada proyecto se llama por lo que ES, nunca por su categoría.
+     *
+     * "Automatizaciones", "Sistema" o "Página web" describen el cajón, no la
+     * pieza, así que el día que entre la segunda automatización el nombre ya
+     * no distingue nada. Los títulos son específicos desde ahora para que el
+     * índice aguante crecer sin renombrarlo entero.
+     *
+     * Cuando haya ~5 de cada tipo tocará agrupar por áreas; ese día las
+     * categorías (`categories`) ya están puestas para hacerlo sin tocar los
+     * títulos.
+     *
+     * Aquí no se nombra al colegio: aparece en las capturas, pero ponerlo en
+     * el título expondría a un cliente sin aportar nada al portfolio.
+     */
+    title: "Control de finanzas",
     placeholder: false,
     featured: true,
     categories: ["WEB", "APP", "SISTEMAS"],
@@ -143,22 +155,22 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "automatizaciones",
+    slug: "analizador-de-metricas",
     number: "02",
-    title: "Automatizaciones",
+    title: "Analizador de métricas",
     placeholder: false,
     featured: true,
     categories: ["AUTOMATION", "AI"],
     year: "2026",
     description:
-      "Dos flujos en n8n que hacen trabajo que antes hacía una persona: uno analiza las métricas de las campañas y manda el veredicto; el otro reparte los mensajes que llegan al área equivocada.",
+      "Hace el trabajo de quien revisa el rendimiento de los anuncios: descarga las métricas, las compara con los periodos anteriores y manda un informe con el veredicto.",
     technologies: ["n8n", "Gemini", "API de Facebook", "Gmail", "Google Sheets"],
     status: "EN VIVO",
-    images: ["/img/flujo-metricas.png", "/img/flujo-tickets.png"],
+    images: ["/img/flujo-metricas.png"],
     chapters: [
       {
         index: "01",
-        label: "01 — MÉTRICAS",
+        label: "01 — EL FLUJO",
         title: "El flujo que analiza las campañas",
         body: "Hace el trabajo de quien revisa el rendimiento de los anuncios: descarga las métricas, las calcula, las compara con los periodos anteriores y dice si va mejor, igual o peor. El dato de hoy solo no significa nada — el trabajo real es tener contra qué compararlo, y eso hecho a mano se termina dejando de hacer justo las semanas en las que más falta hace.",
         points: [
@@ -187,33 +199,67 @@ export const projects: Project[] = [
       },
       {
         index: "03",
-        label: "03 — REPARTO",
-        title: "El flujo que manda cada mensaje a su área",
-        body: "Mucha gente escribe al sitio equivocado. Llegan a una bandeja mensajes que en realidad son para finanzas, o para el equipo técnico, mezclados con preguntas generales — y alguien tiene que abrirlos uno por uno para reenviarlos. Este flujo lee lo que entra, decide de qué va y lo pone delante del área correcta con el trabajo ya empezado.",
-        points: [
-          "Entra un correo y arranca el flujo; se extraen sus datos",
-          "Un modelo lo clasifica con salida estructurada, para que responda en un formato fijo y no en prosa",
-          "Reparto a tres salidas: fallo del producto al equipo técnico, cobros a facturación, y pregunta general con un borrador ya redactado",
-          "Cada ticket queda registrado en una hoja y el correo se etiqueta como procesado, para que no se procese dos veces",
-        ],
-        image: "/img/flujo-tickets.png",
-        imageAlt:
-          "Lienzo de n8n del flujo de tickets: disparador de Gmail, clasificación con modelo, verificación y reparto por categoría a tres áreas.",
-      },
-      {
-        index: "04",
-        label: "04 — CRITERIO",
+        label: "03 — CRITERIO",
         title: "Cuando no está seguro, no adivina",
-        body: "Los dos flujos comparten la misma regla y es lo que los hace utilizables delante de un cliente: el sistema nunca actúa directamente sobre lo que devuelve el modelo. Primero comprueba que esa salida es válida, y solo entonces mueve algo. Si no lo es, el mensaje se aparta para revisión manual y se avisa del fallo. Un clasificador que siempre decide algo, aunque no tenga ni idea, es exactamente lo que no quieres automatizando tu bandeja.",
+        body: "La regla que hace este flujo utilizable delante de un cliente: nunca actúa directamente sobre lo que devuelve el modelo. Primero comprueba que esa salida es válida, y solo entonces mueve algo. Si no lo es, avisa del fallo en vez de mandar un informe con un veredicto inventado. Un análisis que siempre concluye algo, aunque no tenga ni idea, es exactamente lo que no quieres decidiendo dónde pones tu presupuesto.",
       },
     ],
   },
   {
-    slug: "intelec",
+    slug: "reparto-de-mensajes",
     number: "03",
+    title: "Reparto de mensajes",
+    placeholder: false,
+    categories: ["AUTOMATION", "AI"],
+    year: "2026",
+    description:
+      "Mucha gente escribe al área equivocada. Este flujo lee lo que entra, decide de qué va y lo pone delante del equipo que toca, con el trabajo ya empezado.",
+    technologies: ["n8n", "Gmail", "Gemini", "Google Sheets"],
+    status: "EN VIVO",
+    images: ["/img/flujo-tickets.png"],
+    chapters: [
+      {
+        index: "01",
+        label: "01 — EL PROBLEMA",
+        title: "Todo cae en la misma bandeja",
+        body: "A una bandeja de entrada le llega de todo mezclado: un fallo del producto, una duda de cobros y una pregunta general caen exactamente en el mismo sitio, y muchas veces las manda alguien que se equivocó de área. Alguien tiene que abrirlos uno por uno, entender de qué van y reenviarlos. Es un trabajo que casi nunca requiere criterio, pero hay que hacerlo siempre y a tiempo.",
+      },
+      {
+        index: "02",
+        label: "02 — EL FLUJO",
+        title: "Clasificar, comprobar, repartir",
+        body: "Gmail dispara el flujo con cada correo nuevo. Se extraen los datos, el modelo clasifica y —este es el paso que importa— hay una comprobación explícita antes de mover nada. El sistema nunca actúa directamente sobre la salida del modelo: primero verifica que es válida, y sólo entonces reparte.",
+        points: [
+          "Entra un correo y arranca el flujo; se extraen sus datos",
+          "Un modelo lo clasifica con salida estructurada, para que responda en un formato fijo y no en prosa",
+          "Fallo del producto → aviso al equipo técnico",
+          "Cobros → aviso al equipo de facturación",
+          "Pregunta general → borrador de respuesta redactado, sin enviar: eso lo decide una persona",
+        ],
+        image: "/img/flujo-tickets.png",
+        imageAlt:
+          "Lienzo de n8n: disparador de Gmail, clasificación con modelo, verificación y reparto por categoría a tres áreas.",
+      },
+      {
+        index: "03",
+        label: "03 — CRITERIO",
+        title: "Cuando no está seguro, no adivina",
+        body: "Si la clasificación no pasa la comprobación, el correo se marca para revisión manual y se avisa del fallo. Esa rama no es el plan B ni un parche: es parte del diseño. Un clasificador que siempre decide algo, aunque no tenga ni idea, es exactamente lo que no quieres automatizando la bandeja por la que te escriben los clientes.",
+      },
+      {
+        index: "04",
+        label: "04 — EL CIERRE",
+        title: "Registrado y marcado",
+        body: "Los dos caminos terminan igual: el ticket queda registrado en una hoja y el correo se etiqueta como procesado. La etiqueta no es decorativa — es lo que impide que el mismo correo se vuelva a procesar y que a alguien le lleguen dos avisos del mismo asunto.",
+      },
+    ],
+  },
+  {
+    slug: "landing-intelec",
+    number: "04",
     // Nombre de la empresa publicado: Said envió la captura de la portada con
     // la marca a la vista y pidió expresamente meterla en el sitio.
-    title: "Intelec",
+    title: "Landing de Intelec",
     placeholder: false,
     categories: ["PÁGINA WEB", "DESIGN"],
     year: "2026",
@@ -222,13 +268,12 @@ export const projects: Project[] = [
     technologies: ["HTML", "CSS", "JavaScript", "Vercel"],
     status: "EN VIVO",
     /*
-     * FALTA la captura de la portada renderizada. Aquí va la fotografía real
-     * del hero, sacada de los assets del propio proyecto, que es lo mejor que
-     * hay hoy en el repo. En cuanto exista `public/img/intelec-web.png` con
-     * la pantalla completa, se cambia esta línea por:
-     *   images: ["/img/intelec-web.png"],
+     * La portada renderizada, no la foto suelta del hero. Se generó abriendo
+     * la landing real (el código está en Documents/said/INTELEC-EMPRESA-
+     * CHILENA/web) con Chrome en modo headless a 1920x1000 y guardando la
+     * captura. Se rehace con ese mismo procedimiento si la página cambia.
      */
-    image: "/img/intelec.webp",
+    images: ["/img/intelec-web.jpg"],
     chapters: [
       {
         index: "01",
@@ -368,87 +413,58 @@ export const navItems: { number: string; label: string; to: string }[] = [
   { number: "04", label: "CONTACTO", to: "/contact" },
 ];
 
+
 /* ==========================================================================
- * PENDIENTE — QUÉ FALTA PARA COMPLETAR CADA PROYECTO
- * (buscar en el repo: "PENDIENTE" o "FALTA-INFO")
+ * PENDIENTE — QUÉ FALTA EN CADA PROYECTO
+ * (buscar en el repo: "FALTA-INFO")
  *
- * Nada de esto se rellena a ojo. Cada punto se completa solo cuando Said dé
- * el dato real. Mientras tanto, el sitio muestra la verdad: proyectos reales
- * sin documentar todavía.
- *
- * --------------------------------------------------------------------------
- * FALTA-INFO · 01 — AIA system  (slug: "aia-system")
- * --------------------------------------------------------------------------
- *   [ ] Qué significa "AIA" y si el nombre público es exactamente "AIA system"
- *       (mayúsculas incluidas).
- *   [ ] Para quién es: uso propio, un cliente, un negocio concreto.
- *   [ ] Qué cuentas lleva exactamente (gastos personales, facturación,
- *       inventario, caja de un negocio...). Hoy la descripción dice solo
- *       "llevar cuentas" porque es lo único confirmado.
- *   [x] Stack: RESUELTO leyendo el package.json y el código del proyecto en
- *       Documents/Proyecto-nuevaacropolis. No se inventó nada.
- *   [ ] Cuánto le falta y fecha estimada de cierre (para ajustar `status`;
- *       pasa a "EN VIVO" cuando esté publicada).
- *   [ ] ¿Habrá URL pública o demo? -> campo `link`.
- *   [ ] Captura o vídeo de la interfaz -> campo `image` (si no, se queda el
- *       visual generativo, que es una decisión válida).
- *   [ ] Historia para `chapters`: problema que resuelve, cómo decidió la
- *       estructura, qué fue lo difícil, en qué estado está. Sin métricas
- *       inventadas.
+ * Nada de esto se rellena a ojo. Cada punto se completa cuando exista el dato
+ * real o se pueda leer del propio proyecto.
  *
  * --------------------------------------------------------------------------
- * FALTA-INFO · 02 — Informe de anuncios  (slug: "informe-anuncios")
+ * 01 — Control de finanzas   (slug: "control-de-finanzas")
  * --------------------------------------------------------------------------
- *   Los `chapters` salen de la captura del lienzo de n8n, nodo por nodo. Lo
- *   que se ve en el lienzo está descrito; lo que no se ve, no se ha inventado.
- *   [ ] CONFIRMAR `status`: puesto "EN VIVO" porque Said dijo que está hecha y
- *       funcionando. Si hoy no corre sola, cambiar a "PROTOTIPO".
- *   [ ] ¿Cada cuánto se ejecuta? En la captura el disparador es manual ("Al
- *       hacer clic en Probar flujo de trabajo"), así que o hay un Schedule que
- *       no sale en la imagen, o se lanza a mano. Sin confirmar, los capítulos
- *       NO dicen "cada semana" ni ninguna frecuencia.
- *   [ ] ¿Para quién corre? ¿Cuenta de anuncios propia o de un cliente?
- *   [ ] Captura del lienzo como archivo -> ponerla en `public/` y rellenar
- *       `image`. Hoy se dibuja el visual generativo.
- *   [ ] Si algún día hay dato medido (tiempo ahorrado, informes enviados), va
- *       con su fuente. Hoy no hay ninguno y por eso no hay ni una cifra.
+ *   [x] Stack: leído del package.json y del código en
+ *       Documents/Proyecto-nuevaacropolis. No se supuso nada.
+ *   [x] Capturas: las dos del sistema, subidas a petición expresa de Said
+ *       después de avisarle de que enseñan cifras reales de la institución y
+ *       el nombre de la cuenta que la usa. Es su decisión y su cliente.
+ *   [ ] Si algún día hay que retirarlas, se borran de `images` y de
+ *       public/img/ — recordar que una imagen pública queda cacheada.
+ *   [ ] ¿Cada cuánto se usa y por cuánta gente? Sin dato, no se escribe.
  *
  * --------------------------------------------------------------------------
- * FALTA-INFO · 03 — Clasificador de tickets  (slug: "clasificador-tickets")
+ * 02 — Analizador de métricas   (slug: "analizador-de-metricas")
+ * 03 — Reparto de mensajes      (slug: "reparto-de-mensajes")
  * --------------------------------------------------------------------------
- *   Mismo criterio: descrito desde la captura del lienzo.
- *   [ ] CONFIRMAR `status` (ver nota de arriba, aplica igual).
- *   [ ] ¿Sobre qué bandeja corre? ¿Suya, de una empresa, de un cliente?
- *       Si es de un cliente, hace falta permiso antes de dar más detalle.
- *   [ ] Las tres categorías de la captura son "bicho" (bug), "facturación" y
- *       "pregunta general". CONFIRMAR que esos son los nombres reales y no una
- *       traducción automática del lienzo.
- *   [ ] Captura del lienzo -> `public/` + `image`.
+ *   Los capítulos salen de la captura del lienzo de n8n, nodo por nodo. Lo
+ *   que se ve está descrito; lo que no se ve, no se ha inventado.
+ *   [ ] ¿Cada cuánto se ejecuta el analizador? En la captura el disparador es
+ *       manual, así que o hay un Schedule fuera de plano o se lanza a mano.
+ *       Sin confirmar, NINGÚN capítulo dice "cada semana" ni frecuencia.
+ *   [ ] ¿Para quién corren? ¿Cuenta y bandeja propias o de un cliente?
+ *   [ ] Sin métricas: ni tiempo ahorrado ni correos procesados. Si algún día
+ *       hay una cifra medida, va con su fuente o no va.
  *
  * --------------------------------------------------------------------------
- * FALTA-INFO · 04 — Intelec  (slug: "intelec")
+ * 04 — Landing de Intelec   (slug: "landing-intelec")
  * --------------------------------------------------------------------------
+ *   [x] Captura de la portada renderizada, generada con Chrome headless.
  *   [ ] PERMISO: el nombre de la empresa está publicado porque Said mandó la
- *       captura con la marca visible y pidió meterla. CONFIRMAR que Intelec
- *       está de acuerdo con aparecer en el portfolio. Si no, se vuelve a
- *       "una empresa" y se quitan las referencias al producto.
- *   [ ] URL pública -> `link`. Existe un despliegue en Vercel, pero no se ha
- *       puesto el enlace sin confirmar que es la versión definitiva y que se
- *       puede enlazar desde fuera.
- *   [ ] CONFIRMAR `status` "EN VIVO".
- *   [ ] Alcance real: ¿diseño y código, o solo una de las dos? Eso decide si
- *       `categories` sigue siendo ["WEB", "DESIGN"].
- *   [ ] Captura de la portada -> `public/` + `image`. Es el proyecto donde más
- *       se nota, porque es el único puramente visual de los cuatro.
+ *       captura con la marca visible y pidió meterla. Confirmar que Intelec
+ *       está de acuerdo con aparecer.
+ *   [ ] URL pública -> `link`. El despliegue en Vercel devuelve hoy un 404,
+ *       así que no hay nada que enlazar hasta que vuelva a estar en pie.
+ *   [ ] Alcance real: ¿diseño y código, o sólo una de las dos cosas?
  *
  * --------------------------------------------------------------------------
- * NOTAS TRANSVERSALES
+ * CÓMO CRECE ESTE ARCHIVO
  * --------------------------------------------------------------------------
- *   [ ] `year`: los cuatro en "2026". Corregir si alguno empezó antes.
- *   [ ] NINGÚN proyecto tiene `image`. Las tres capturas existen pero están en
- *       el chat, no en el repo. En cuanto los archivos estén en `public/`,
- *       rellenar `image` en los tres: sustituye al visual generativo y es la
- *       mejora más grande que le queda al sitio de una sola vez.
- *   [ ] Al añadir o quitar proyectos, la home imprime `projects.length` en el
- *       hero ("X PROYECTOS / Y LAB"): pasó de 3 a 4 solo, pero conviene mirarlo.
+ *   · Un proyecto = una entrada, con nombre propio y específico. Nunca un
+ *     nombre de categoría ("Automatizaciones", "Sistema", "Página web"): el
+ *     día que entra el segundo del mismo tipo, ese nombre ya no distingue.
+ *   · Cuando haya ~5 de cada tipo tocará agrupar por áreas. `categories` ya
+ *     está puesto en todos para poder hacerlo sin renombrar nada.
+ *   · La home imprime `projects.length` en el hero ("X PROYECTOS / Y LAB"):
+ *     se actualiza solo, pero conviene mirarlo al añadir.
  * ========================================================================== */
